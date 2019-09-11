@@ -22,6 +22,7 @@
 #include "parallel/HaloRegion.h"
 #include "WrapOpenMP.h"
 #include "plugins/VectorizationTuner.h"
+#include "particleContainer/FullParticleCell.h"
 
 #include "ParticleData.h"
 #include "KDNode.h"
@@ -408,8 +409,15 @@ bool KDDecomposition::migrateParticles(const KDNode& newRoot, const KDNode& newO
 		global_log->error_always_output() << "Particles that were not moved and will be lost:" << std::endl;
 		for (auto iter = moleculeContainer->iterator(); iter.isValid(); ++iter) {
 			global_log->error_always_output()
-				<< "cell: " << iter.getCellIndex() << ", particle id: " << iter->getID() << " r: (" << iter->r(0)
+				<< "particle id: " << iter->getID() << " r: (" << iter->r(0)
 				<< ", " << iter->r(1) << ", " << iter->r(2) << ")" << std::endl;
+			auto cellIndex = iter.getCellIndex();
+			auto& cbfm = ParticleCell::_cellBorderAndFlagManager;
+			global_log->error_always_output()
+				<< "in cell " << cellIndex << ", cell boundaries: [" << cbfm.getBoundingBoxMin(cellIndex, 0) << ","
+				<< cbfm.getBoundingBoxMin(cellIndex, 1) << ", " << cbfm.getBoundingBoxMin(cellIndex, 2) << "] x ["
+				<< cbfm.getBoundingBoxMax(cellIndex, 0) << "," << cbfm.getBoundingBoxMax(cellIndex, 1) << ", "
+				<< cbfm.getBoundingBoxMax(cellIndex, 2) << "] " << std::endl;
 		}
 		Simulation::exit(312);
 	}
