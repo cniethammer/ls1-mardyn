@@ -406,6 +406,11 @@ bool KDDecomposition::migrateParticles(const KDNode& newRoot, const KDNode& newO
 			<< _ownArea->_highCorner[2] << ") to [" << newOwnLeaf._lowCorner[0] << ", " << newOwnLeaf._highCorner[0]
 			<< ") x [" << newOwnLeaf._lowCorner[1] << ", " << newOwnLeaf._highCorner[1] << ") x ["
 			<< newOwnLeaf._lowCorner[2] << ", " << newOwnLeaf._highCorner[2] << ")." << std::endl;
+		global_log->error_always_output()
+			<< "old moleculeContainer boundaries: [" << moleculeContainer->getBoundingBoxMin(0) << ","
+			<< moleculeContainer->getBoundingBoxMin(1) << ", " << moleculeContainer->getBoundingBoxMin(2) << ") x ["
+			<< moleculeContainer->getBoundingBoxMax(0) << "," << moleculeContainer->getBoundingBoxMax(1) << ", "
+			<< moleculeContainer->getBoundingBoxMax(2) << ") " << std::endl;
 		global_log->error_always_output() << "Particles that were not moved and will be lost:" << std::endl;
 		for (auto iter = moleculeContainer->iterator(); iter.isValid(); ++iter) {
 			global_log->error_always_output()
@@ -415,9 +420,9 @@ bool KDDecomposition::migrateParticles(const KDNode& newRoot, const KDNode& newO
 			auto& cbfm = ParticleCell::_cellBorderAndFlagManager;
 			global_log->error_always_output()
 				<< "in cell " << cellIndex << ", cell boundaries: [" << cbfm.getBoundingBoxMin(cellIndex, 0) << ","
-				<< cbfm.getBoundingBoxMin(cellIndex, 1) << ", " << cbfm.getBoundingBoxMin(cellIndex, 2) << "] x ["
+				<< cbfm.getBoundingBoxMin(cellIndex, 1) << ", " << cbfm.getBoundingBoxMin(cellIndex, 2) << ") x ["
 				<< cbfm.getBoundingBoxMax(cellIndex, 0) << "," << cbfm.getBoundingBoxMax(cellIndex, 1) << ", "
-				<< cbfm.getBoundingBoxMax(cellIndex, 2) << "] " << std::endl;
+				<< cbfm.getBoundingBoxMax(cellIndex, 2) << ") " << std::endl;
 		}
 		Simulation::exit(312);
 	}
