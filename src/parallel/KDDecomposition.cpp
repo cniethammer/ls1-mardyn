@@ -407,8 +407,9 @@ bool KDDecomposition::migrateParticles(const KDNode& newRoot, const KDNode& newO
 			<< newOwnLeaf._lowCorner[2] << ", " << newOwnLeaf._highCorner[2] << ")." << std::endl;
 		global_log->error_always_output() << "Particles that were not moved and will be lost:" << std::endl;
 		for (auto iter = moleculeContainer->iterator(); iter.isValid(); ++iter) {
-			global_log->error_always_output() << "id: " << iter->getID() << " r: (" << iter->r(0) << ", " << iter->r(1)
-											  << ", " << iter->r(2) << ")" << std::endl;
+			global_log->error_always_output()
+				<< "cell: " << iter.getCellIndex() << ", particle id: " << iter->getID() << " r: (" << iter->r(0)
+				<< ", " << iter->r(1) << ", " << iter->r(2) << ")" << std::endl;
 		}
 		Simulation::exit(312);
 	}
