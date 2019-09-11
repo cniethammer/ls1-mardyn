@@ -397,9 +397,9 @@ bool KDDecomposition::migrateParticles(const KDNode& newRoot, const KDNode& newO
 			}
 		}
 	}
-	if (moleculeContainer->getNumberOfParticles() != 0ul) {
+	if (auto numParticles = moleculeContainer->getNumberOfParticles() != 0ul) {
 		global_log->error_always_output()
-			<< "KDDecomposition::migrateParticles: particles remaining in KDD, they will be lost. " << std::endl;
+			<< "KDDecomposition::migrateParticles: " << numParticles << " particles remaining in KDD, they will be lost. " << std::endl;
 		global_log->error_always_output()
 			<< "This process migrated from [" << _ownArea->_lowCorner[0] << ", " << _ownArea->_highCorner[0] << ") x ["
 			<< _ownArea->_lowCorner[1] << ", " << _ownArea->_highCorner[1] << ") x [" << _ownArea->_lowCorner[2] << ", "
