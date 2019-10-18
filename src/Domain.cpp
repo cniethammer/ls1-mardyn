@@ -222,7 +222,7 @@ void Domain::calculateGlobalValues(
 		numMolecules = domainDecomp->collCommGetUnsLong();
 		rotDOF = domainDecomp->collCommGetUnsLong();
 		domainDecomp->collCommFinalize();
-		global_log->debug() << "[ thermostat ID " << thermit->first << "]\tN = " << numMolecules << "\trotDOF = " << rotDOF
+		global_log->info() << "[ thermostat ID " << thermit->first << "]\tN = " << numMolecules << "\trotDOF = " << rotDOF
 			<< "\tmv2 = " <<  summv2 << "\tIw2 = " << sumIw2 << endl;
 
 		this->_universalThermostatN[thermit->first] = numMolecules;
