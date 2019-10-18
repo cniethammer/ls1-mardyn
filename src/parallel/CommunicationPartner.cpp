@@ -316,17 +316,17 @@ bool CommunicationPartner::testRecv(ParticleContainer* moleculeContainer, bool r
 						_recvBuf.readLeavingMolecule(i, m);
 #ifdef MARDYN_AUTOPAS
 						if (not moleculeContainer->isInBoundingBox(m.r_arr().data())) {
-							global_log->error_always_output()
-								<< "Trying to add a particle that is not in the bounding box of this process to it!"
+							std::stringstream ss;
+							ss  << "Trying to add a particle that is not in the bounding box of this process to it!"
 								<< std::endl;
-							global_log->error_always_output() << "Particle: " << m.toString() << std::endl;
-							global_log->error_always_output()
-								<< "box: [" << moleculeContainer->getBoundingBoxMin(0) << ","
+							ss  << "Particle: " << m.toString() << std::endl;
+							ss  << "box: [" << moleculeContainer->getBoundingBoxMin(0) << ","
 								<< moleculeContainer->getBoundingBoxMax(0) << "] x ["
 								<< moleculeContainer->getBoundingBoxMin(1) << ","
 								<< moleculeContainer->getBoundingBoxMax(1) << "] x ["
 								<< moleculeContainer->getBoundingBoxMin(2) << ","
 								<< moleculeContainer->getBoundingBoxMax(2) << "]" << std::endl;
+							global_log->error_always_output() << ss.str();
 							Simulation::exit(23527);
 						}
 #endif
