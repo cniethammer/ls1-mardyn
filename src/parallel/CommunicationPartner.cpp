@@ -327,7 +327,7 @@ bool CommunicationPartner::testRecv(ParticleContainer* moleculeContainer, bool r
 								<< moleculeContainer->getBoundingBoxMin(2) << ","
 								<< moleculeContainer->getBoundingBoxMax(2) << "]" << std::endl;
 							ss  << "Partner rank: " << _rank << std::endl;
-							global_log->error_always_output() << ss.str();
+							global_log->error_always_output() << ss.str() << std::flush;
 							Simulation::exit(23527);
 						}
 #endif
