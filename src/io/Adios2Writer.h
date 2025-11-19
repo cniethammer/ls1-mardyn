@@ -6,7 +6,6 @@
  * Allows to write ADIOS2 phase space series files for visualization with Megamol.
  *
  */
-#ifdef ENABLE_ADIOS2
 
 #include "molecules/Component.h"
 #include "molecules/MoleculeForwardDeclaration.h"
@@ -104,5 +103,4 @@ private:
 	adios2::Operator _compressionOperator;
 	bool _singleCenter = true;
 };
-#endif
 #endif /* ADIOS2_WRITER_H_*/

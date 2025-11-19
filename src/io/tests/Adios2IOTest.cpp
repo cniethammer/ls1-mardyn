@@ -6,7 +6,6 @@
  *  Created on: July 2021
  *      Author: Heinen, Gralka, Rau, Homes
  */
-#ifdef ENABLE_ADIOS2
 
 #include "Domain.h"
 #include "molecules/Quaternion.h"
@@ -207,5 +206,3 @@ void Adios2IOTest::testReadCheckpoint() {
 		}
 	}
 }
-
-#endif

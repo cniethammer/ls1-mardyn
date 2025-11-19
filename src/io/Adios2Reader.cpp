@@ -5,8 +5,6 @@
  *      Author: Tobias Rau, Matthias Heinen, Patrick Gralka, Christoph Niethammer, Simon Homes
  */
 
-#ifdef ENABLE_ADIOS2
-
 #include "Adios2Reader.h"
 #include "particleContainer/ParticleContainer.h"
 #include "Domain.h"
@@ -551,5 +549,3 @@ void Adios2Reader::initAdios2() {
     }
     Log::global_log->info() << "[Adios2Reader] Init complete." << std::endl;
 };
-
-#endif // ENABLE_ADIOS2

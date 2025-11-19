@@ -4,7 +4,6 @@
  *  Created on: April 2021
  *      Author: Tobias Rau, Matthias Heinen, Patrick Gralka, Christoph Niethammer, Simon Homes
  */
-#ifdef ENABLE_ADIOS2
 #include "Adios2Writer.h"
 
 #include <numeric>
@@ -444,4 +443,3 @@ void Adios2Writer::finish(ParticleContainer* particleContainer, DomainDecompBase
 	_engine->Close();
 	Log::global_log->info() << "[Adios2Writer] finish." << std::endl;
 }
-#endif

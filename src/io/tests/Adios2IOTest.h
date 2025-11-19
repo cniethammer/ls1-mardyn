@@ -8,8 +8,6 @@
  */
 #pragma once
 
-#ifdef ENABLE_ADIOS2
-
 #include "utils/TestWithSimulationSetup.h"
 #include "molecules/Component.h"
 #include <vector>
@@ -61,5 +59,3 @@ private:
 	std::string _filename = "adios2restart.bp";
 
 };
-
-#endif
