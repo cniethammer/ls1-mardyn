@@ -9,6 +9,7 @@
 #include "molecules/Molecule.h"
 #include "molecules/MoleculeIdPool.h"
 #include "parallel/DomainDecompBase.h"
+#include "Simulation.h"
 #include "utils/generator/ObjectFillerBase.h"
 #include "utils/generator/ObjectFillerFactory.h"
 #include "utils/generator/ObjectFactory.h"
