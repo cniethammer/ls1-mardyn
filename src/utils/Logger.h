@@ -1,8 +1,6 @@
 #ifndef LOGGER_H_
 #define LOGGER_H_
 
-#define USE_GETTIMEOFDAY
-
 #include <algorithm>
 #include <chrono>
 #include <ctime>
