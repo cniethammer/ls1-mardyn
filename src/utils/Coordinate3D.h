@@ -1,6 +1,7 @@
 #ifndef SRC_UTILS_COORDINATE3D_H_
 #define SRC_UTILS_COORDINATE3D_H_
 
+#include <array>
 #include <string>
 
 #include "utils/xmlfileUnits.h"
@@ -36,7 +37,7 @@ public:
 	void get(double vec[3]);
 
 private:
-	double _vec[3]; //!< holds the coordinate vector.
+	std::array<double, 3> _vec; //!< holds the coordinate vector.
 };
 
 #endif  // SRC_UTILS_COORDINATE3D_H_
