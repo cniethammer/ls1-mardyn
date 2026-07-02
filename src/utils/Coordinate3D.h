@@ -29,12 +29,12 @@ public:
 	 */
 	void readXML(XMLfileUnits& xmlconfig);
 
-	double x() const { return _vec[0]; } //!< Get x component of coordinate
-	double y() const { return _vec[1]; } //!< Get y component of coordinate
-	double z() const { return _vec[2]; } //!< Get z component of coordinate
+	double x() const { return _vec[0]; } //!< Get x component of coordinate (in reduced units)
+	double y() const { return _vec[1]; } //!< Get y component of coordinate (in reduced units)
+	double z() const { return _vec[2]; } //!< Get z component of coordinate (in reduced units)
 
 
-	/** @brief obtain coordinate vector values
+	/** @brief obtain coordinate vector values (in reduced units)
 	 *  @deprecated Use get() returning std::array<double, 3> instead.
 	 */
 	[[deprecated("Use get() returning std::array<double,3> instead")]]
