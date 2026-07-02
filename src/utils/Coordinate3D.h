@@ -29,9 +29,9 @@ public:
 	 */
 	void readXML(XMLfileUnits& xmlconfig);
 
-	double x() { return _vec[0]; } //!< Get x component of coordinate
-	double y() { return _vec[1]; } //!< Get y component of coordinate
-	double z() { return _vec[2]; } //!< Get z component of coordinate
+	double x() const { return _vec[0]; } //!< Get x component of coordinate
+	double y() const { return _vec[1]; } //!< Get y component of coordinate
+	double z() const { return _vec[2]; } //!< Get z component of coordinate
 
 	/** @brief obtain coordinate vector values */
 	void get(double vec[3]);
