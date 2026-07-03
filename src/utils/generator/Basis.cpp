@@ -44,7 +44,7 @@ void Basis::addMolecule(const Molecule& molecule) {
 	_molecules.push_back(molecule);
 }
 
-Molecule Basis::getMolecule(int i) const {
+Molecule Basis::getMolecule(size_t i) const {
 	return _molecules.at(i);
 }
 

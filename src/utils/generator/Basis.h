@@ -51,7 +51,7 @@ public:
 	 * @param[in]  i  Position of molecule to be returned
 	 * @return  Molecule at position i
 	 */
-	Molecule getMolecule(int i) const;
+	Molecule getMolecule(size_t i) const;
 
 private:
     std::vector<Molecule> _molecules;
