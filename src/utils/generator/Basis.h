@@ -45,13 +45,13 @@ public:
 	/** Number of molecules of the basis
 	 * @return  number of molecules in the basis
 	 */
-	size_t numMolecules();
+	size_t numMolecules() const;
 
 	/** Obtain molecule from basis
 	 * @param[in]  i  Position of molecule to be returned
 	 * @return  Molecule at position i
 	 */
-	Molecule getMolecule(int i);
+	Molecule getMolecule(int i) const;
 
 private:
     std::vector<Molecule> _molecules;

@@ -44,11 +44,11 @@ void Basis::addMolecule(const Molecule& molecule) {
 	_molecules.push_back(molecule);
 }
 
-Molecule Basis::getMolecule(int i) {
-	return _molecules[i];
+Molecule Basis::getMolecule(int i) const {
+	return _molecules.at(i);
 }
 
 
-size_t Basis::numMolecules(){
+size_t Basis::numMolecules() const {
 	return _molecules.size();
 }
