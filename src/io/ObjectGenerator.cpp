@@ -15,6 +15,7 @@
 #include "utils/generator/EqualVelocityAssigner.h"
 #include "utils/generator/MaxwellVelocityAssigner.h"
 #include "utils/generator/VelocityAssignerBase.h"
+#include "utils/Logger.h"
 
 
 void ObjectGenerator::readXML(XMLfileUnits& xmlconfig) {
@@ -143,6 +144,7 @@ ObjectGenerator::readPhaseSpace(ParticleContainer* particleContainer, Domain* do
 		// only add particle if it is inside of the own domain!
 		if(particleContainer->isInBoundingBox(molecule.r_arr().data())) {
 			particleContainer->addParticle(molecule, true, false);
+			Log::global_log->debug() << "Inserting molecule " << molecule << std::endl;
 			numMolecules++;
 			moleculeID = _moleculeIdPool->getNewMoleculeId();
 		}
