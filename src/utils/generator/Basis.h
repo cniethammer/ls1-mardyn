@@ -28,6 +28,8 @@ public:
 	 * \code{.xml}
 	   <basis>
 	     <site>
+	       <!-- specifying molecule for site position using component name takes precedence over ID -->
+	       <componentname>STR</componentname>
 	       <componentid>INT</componentid>
 	       <coordinate> <x>DOUBLE</x> <y>DOUBLE</y> <z>DOUBLE</z> </coordinate>
 	     </site>
