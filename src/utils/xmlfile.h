@@ -100,13 +100,6 @@ public:
 			: m_xmlnode(NULL), m_nodepath(std::string()), m_type(Unknown_Node)
 			{}
 
-		/// \brief XMLfile::Node copy constructor
-		/// duplicate a node
-		/// \param	XMLfile::Node&	source node
-		Node(const Node& n)
-			: m_xmlnode(n.m_xmlnode), m_nodepath(n.m_nodepath), m_type(n.m_type)
-			{}
-
 		/// \brief get nodepath
 		/// returns the full path of the node
 		/// \return	std::string	nodepath
@@ -176,12 +169,6 @@ public:
 		/// \return	bool	return value
 		bool value_bool(bool defaultvalue=false) const;
 
-		/// \brief assignment operator
-		/// copy/duplicate other node content to node
-		/// \param	XMLfile::Node	source node
-		/// \return	XMLfile::Node&	reference to this node
-		Node& operator =(const Node& n)
-			{ m_xmlnode=n.m_xmlnode; m_nodepath=n.m_nodepath; return *this; }
 		/// \brief template type cast operator
 		/// return node content (getValue)
 		template<typename T> operator T() const
@@ -200,12 +187,6 @@ public:
 		/// \param	std::ostream&	stream to write to (default: std::cout)
 		void print(std::ostream& ostrm=std::cout) const;
 
-		Node& operator=(Node& node){
-			m_xmlnode = node.m_xmlnode;
-			m_nodepath = node.m_nodepath;
-			m_type = node.m_type;
-			return *this;
-		}
 	private:
 		Node(const t_XMLnode* xmlnode, std::string nodepath=std::string())
 		    : m_xmlnode(xmlnode), m_nodepath(nodepath), m_type(Unknown_Node)
