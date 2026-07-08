@@ -1,8 +1,9 @@
 #ifndef COMPONENT_H_
 #define COMPONENT_H_
 
-#include <vector>
+#include <array>
 #include <string>
+#include <vector>
 
 #include "molecules/Site.h"
 
@@ -151,8 +152,8 @@ private:
 	/** moments of inertia tensor
 	 * \f$ I_{xx}, I_{yy}, I_{zz}, I_{xy}, I_{xz}, I_{yz} \f$
 	 */
-	double _I[6];
-	double _Ipa[3]; /**< moments of inertia for principal axes */
+	std::array<double, 6> _I;
+	std::array<double, 3> _Ipa; /**< moments of inertia for principal axes */
 	unsigned long _rot_dof; /**< number of rotational degrees of freedom */
 
 	/* cached values, set by ensemble class! */
