@@ -5,6 +5,7 @@
 #include "molecules/Comp2Param.h"
 #include "molecules/Site.h"
 
+#include <array>
 #include <vector>
 #include <iostream>
 #include "utils/mardyn_assert.h"
@@ -337,17 +338,18 @@ protected:
 	void calcFM_site(const std::array<double, 3>& d, const std::array<double, 3>& F);
 
     Component *_component;  /**< IDentification number of its component type */
-	double _r[3];  /**< position coordinates */
-	double _F[3];  /**< forces */
-	double _v[3];  /**< velocity */
+	std::array<double, 3> _r;  /**< position coordinates */
+	std::array<double, 3> _F;  /**< forces */
+	std::array<double, 3> _v;  /**< velocity */
 	Quaternion _q; /**< angular orientation */
-	double _M[3];  /**< torsional moment */
-	double _L[3];  /**< angular momentum */
-	double _Vi[3]; /** Virial tensor **/
+	std::array<double, 3> _M;  /**< torsional moment */
+	std::array<double, 3> _L;  /**< angular momentum */
+	std::array<double, 3> _Vi; /** Virial tensor **/
     unsigned long _id;  /**< IDentification number of that molecule */
 
 	double _m; /**< total mass */
-	double _I[3]{0.,0.,0.},_invI[3]{0.,0.,0.};  // moment of inertia for principal axes and it's inverse
+	std::array<double, 3> _I = {0., 0.,0.};
+	std::array<double, 3> _invI = {0.,0.,0.};  // moment of inertia for principal axes and it's inverse
 
 	/* absolute positions are stored in the soa. Work-arounds to get the relative ones*/
 	CellDataSoA * _soa;
