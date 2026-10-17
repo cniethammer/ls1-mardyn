@@ -120,7 +120,6 @@ public:
 	virtual unsigned int numQuadrupoles() const = 0;
 
 	// relative positions to CM
-	virtual std::array<double, 3> site_d(unsigned int i) const = 0;
 	virtual std::array<double, 3> ljcenter_d(unsigned int i) const = 0;
 	virtual std::array<double, 3> charge_d(unsigned int i) const = 0;
 	virtual std::array<double, 3> dipole_d(unsigned int i) const = 0;

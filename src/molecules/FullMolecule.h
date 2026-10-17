@@ -140,21 +140,7 @@ public:
 	unsigned int numDipoles() const override { return _component->numDipoles(); }
 	unsigned int numQuadrupoles() const override { return _component->numQuadrupoles(); }
 
-	std::array<double, 3> site_d(unsigned int i) const override {
-		const unsigned n1 = numLJcenters(), n2 = numCharges()+ n1, n3 = numDipoles() + n2;
-#ifndef NDEBUG
-		const unsigned n4 = numQuadrupoles() + n3;
-#endif
-		if(i < n1) {
-			return ljcenter_d(i);
-		} else if (i < n2) {
-			return charge_d(i - n1);
-		} else if (i < n3) {
-			return dipole_d(i - n2);
-		} else { mardyn_assert(i < n4);
-			return quadrupole_d(i - n3);
-		}
-	}
+
 	std::array<double, 3> ljcenter_d(unsigned int i) const override {
 		return computeLJcenter_d(i);
 	}

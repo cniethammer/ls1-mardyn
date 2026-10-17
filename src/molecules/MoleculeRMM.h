@@ -174,8 +174,6 @@ public:
 		return 0;
 	}
 
-	std::array<double, 3> site_d(unsigned int /*i*/) const override { return emptyArray3(); }
-
 	std::array<double, 3> ljcenter_d(unsigned int i) const override { return emptyArray3(); }
 	std::array<double, 3> charge_d(unsigned int /*i*/) const override { return emptyArray3(); }
 	std::array<double, 3> dipole_d(unsigned int /*i*/) const override { return emptyArray3(); }
