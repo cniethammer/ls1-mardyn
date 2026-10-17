@@ -28,7 +28,7 @@ endif(NOT CMAKE_BUILD_TYPE)
 enable_testing()
 
 # modules
-set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake/modules/)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake/modules")
 
 # ----- first: include option files
 option(GIT_SUBMODULES_SSH "Use SSH for git submodules instead of HTTPS" OFF)
