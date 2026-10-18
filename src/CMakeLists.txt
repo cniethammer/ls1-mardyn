@@ -38,7 +38,7 @@ add_subdirectory(utils)
 
 
 # we just add all libraries here. If a library is not set, it will simply be ignored.
-target_link_libraries(MarDyn
+target_link_libraries(MarDyn PRIVATE
         ${BLAS_LIB}    # for armadillo
         ${LAPACK_LIB}  # for armadillo
         ${VTK_LIB}     # for VTK/xerces
@@ -47,8 +47,12 @@ target_link_libraries(MarDyn
         ${ADIOS2_LIB}  # for adios2
         ${LZ4_LIB}     # for LZ4 compression
         ${ALL_LIB}     # for ALL
-        ${MPI_LIB}     # for MPI
         )
+
+if(ENABLE_MPI)
+    target_link_libraries(MarDyn PUBLIC MPI::MPI_CXX)
+    target_compile_definitions(MarDyn PUBLIC ENABLE_MPI)
+endif()
 
 target_compile_definitions(MarDyn PUBLIC
         ${ADIOS2_COMPILE_DEFINITION}
