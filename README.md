@@ -12,6 +12,7 @@ ls1-MarDyn is a massively parallel Molecular Dynamics (MD) code designed for lar
 - [Documentation](#documentation)
 - [Installation](#installation)
 - [Running ls1-MarDyn](#running-ls1-mardyn)
+- [Testing](#testing)
 - [AutoPas Support](#autopas-support)
 - [Visualisation](#visualisation)
 - [Contact](#contact)
@@ -87,6 +88,27 @@ mpirun -np 2 ../../../build/src/MarDyn config.xml  --steps 10
 optional: to make the simulation aware of time limits like on a compute node, which should stop the simulation even if the desired amount of steps is not reached use ```loop-abort-time``` in (s) in XML or CLI:
 ```sh
 mpirun -np 2 ../../../build/src/MarDyn config.xml  --steps 10 --loop-abort-time 3600
+```
+
+## Testing
+ls1-MarDyn uses [CTest](https://cmake.org/cmake/help/latest/manual/ctest.1.html) for running its test suite. Tests are built by default. To disable them, configure with:
+```sh
+cmake -B build/ -S . -DBUILD_TESTING=OFF
+```
+
+Unit tests and integration tests can be toggled independently:
+```sh
+cmake -B build/ -S . -DENABLE_UNIT_TESTS=OFF -DENABLE_INTEGRATION_TESTS=ON
+```
+
+To run the tests after building:
+```sh
+ctest --test-dir build/
+```
+
+To run only a specific test:
+```sh
+ctest --test-dir build/ -R MarDyn_test
 ```
 
 ## AutoPas Support
