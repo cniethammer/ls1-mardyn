@@ -54,6 +54,11 @@ if(ENABLE_MPI)
     target_compile_definitions(MarDyn PUBLIC ENABLE_MPI)
 endif()
 
+if(ENABLE_OPENMP)
+    target_link_libraries(MarDyn PUBLIC OpenMP::OpenMP_CXX)
+    target_compile_definitions(MarDyn PUBLIC ENABLE_OPENMP)
+endif()
+
 target_compile_definitions(MarDyn PUBLIC
         ${ADIOS2_COMPILE_DEFINITION}
 )
