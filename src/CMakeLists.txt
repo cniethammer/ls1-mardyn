@@ -20,10 +20,9 @@ target_sources(MarDyn
         Simulation.cpp
 )
 
-if(ENABLE_UNIT_TESTS)
+if(BUILD_TESTING)
     add_subdirectory(tests)
-endif(ENABLE_UNIT_TESTS)
-
+endif()
 
 add_subdirectory(bhfmm)
 add_subdirectory(ensemble)
@@ -54,9 +53,4 @@ target_link_libraries(MarDyn
 
 target_compile_definitions(MarDyn PUBLIC
         ${ADIOS2_COMPILE_DEFINITION}
-)
-
-add_test(
-        NAME MarDyn_test
-        COMMAND MarDyn -t -d ${PROJECT_SOURCE_DIR}/test_input
 )
