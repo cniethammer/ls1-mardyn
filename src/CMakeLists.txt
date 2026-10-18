@@ -1,4 +1,3 @@
-# add the executable
 if(MAMICO_COUPLING)
     add_library(MarDyn STATIC)
     target_include_directories(MarDyn SYSTEM PRIVATE "${MAMICO_SRC_DIR}")
@@ -54,3 +53,5 @@ target_link_libraries(MarDyn
 target_compile_definitions(MarDyn PUBLIC
         ${ADIOS2_COMPILE_DEFINITION}
 )
+
+install(TARGETS MarDyn)
