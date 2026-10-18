@@ -8,7 +8,7 @@ project(MarDyn
     VERSION 1.2.0
     DESCRIPTION "ls1-MarDyn - Large Sca1e MoleculAR DYNamics code"
     HOMEPAGE_URL "https://www.ls1-mardyn.de/"
-    LANGUAGES C CXX
+    LANGUAGES CXX
 )
 
 set(CMAKE_CXX_STANDARD 17)
