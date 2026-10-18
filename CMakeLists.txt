@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.24)
+cmake_minimum_required(VERSION 3.28)
 
 # disable in source builds
 set(CMAKE_DISABLE_SOURCE_CHANGES ON)
