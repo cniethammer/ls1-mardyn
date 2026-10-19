@@ -44,7 +44,6 @@ target_link_libraries(MarDyn PRIVATE
         ${VTK_LIB}     # for VTK/xerces
         ${CPPUNIT_LIB} # for unit tests
         ${AUTOPAS_LIB} # for autopas
-        ${ADIOS2_LIB}  # for adios2
         ${LZ4_LIB}     # for LZ4 compression
         ${ALL_LIB}     # for ALL
         )
@@ -58,9 +57,5 @@ if(ENABLE_OPENMP)
     target_link_libraries(MarDyn PUBLIC OpenMP::OpenMP_CXX)
     target_compile_definitions(MarDyn PUBLIC ENABLE_OPENMP)
 endif()
-
-target_compile_definitions(MarDyn PUBLIC
-        ${ADIOS2_COMPILE_DEFINITION}
-)
 
 install(TARGETS MarDyn)
