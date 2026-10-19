@@ -44,7 +44,6 @@ target_link_libraries(MarDyn PRIVATE
         ${VTK_LIB}     # for VTK/xerces
         ${CPPUNIT_LIB} # for unit tests
         ${AUTOPAS_LIB} # for autopas
-        ${LZ4_LIB}     # for LZ4 compression
         ${ALL_LIB}     # for ALL
         )
 
