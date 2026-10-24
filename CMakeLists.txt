@@ -74,3 +74,12 @@ add_subdirectory(src)
 
 # add libraries
 add_subdirectory(libs)
+
+if(PROJECT_IS_TOP_LEVEL)
+    set(CPACK_PACKAGE_NAME MarDyn)
+    set(CPACK_PACKAGE_VENDOR "ls1-mardyn Team")
+    set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "ls1-MarDyn - Large Sca1e MoleculAR DYNamics code")
+    set(CPACK_PACKAGE_INSTALL_DIRECTORY ${CPACK_PACKAGE_NAME})
+    set(CPACK_VERBATIM_VARIABLES TRUE)
+    include(CPack)
+endif()
