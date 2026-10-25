@@ -108,14 +108,14 @@ VectorizedCellProcessor :: ~VectorizedCellProcessor () {
 
 void VectorizedCellProcessor::initTraversal() {
 	#if defined(_OPENMP)
-	#pragma omp master
+	#pragma omp masked
 	#endif
 	{
 		_virial = 0.0;
 		_upot6lj = 0.0;
 		_upotXpoles = 0.0;
 		_myRF = 0.0;
-	} // end pragma omp master
+	} // end pragma omp masked
 }
 
 

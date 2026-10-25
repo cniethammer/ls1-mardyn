@@ -1567,7 +1567,7 @@ void KDDecomposition::collectMoleculesInRegion(ParticleContainer* moleculeContai
 		const int numThreads = mardyn_get_num_threads();
 		const int threadNum = mardyn_get_thread_num();
 		#if defined (_OPENMP)
-		#pragma omp master
+		#pragma omp masked
 		#endif
 		{
 			threadData.resize(numThreads);
@@ -1593,7 +1593,7 @@ void KDDecomposition::collectMoleculesInRegion(ParticleContainer* moleculeContai
 
 		//build the prefix array and resize the molecule array
 		#if defined (_OPENMP)
-		#pragma omp master
+		#pragma omp masked
 		#endif
 		{
 			int totalNumMols = 0;

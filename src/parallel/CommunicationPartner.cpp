@@ -464,7 +464,7 @@ void CommunicationPartner::collectMoleculesInRegion(ParticleContainer* moleculeC
 		const int numThreads = mardyn_get_num_threads();
 		const int threadNum = mardyn_get_thread_num();
 		#if defined (_OPENMP)
-		#pragma omp master
+		#pragma omp masked
 		#endif
 		{
 			threadData.resize(numThreads);
@@ -493,7 +493,7 @@ void CommunicationPartner::collectMoleculesInRegion(ParticleContainer* moleculeC
 
 		//build the prefix array and resize the send buffer
 		#if defined (_OPENMP)
-		#pragma omp master
+		#pragma omp masked
 		#endif
 		{
 			int totalNumMolsAppended = 0;

@@ -75,12 +75,12 @@ void VCP1CLJRMM::initTraversal() {
 	mardyn_assert(_dtInvm != static_cast<vcp_real_calc>(0.0));
 
 	#if defined(_OPENMP)
-	#pragma omp master
+	#pragma omp masked
 	#endif
 	{
 		_upot6lj = 0.0;
 		_virial = 0.0;
-	} // end pragma omp master
+	} // end pragma omp masked
 
 	Log::global_log->debug() << "VCP1CLJRMM::initTraversal()." << std::endl;
 }

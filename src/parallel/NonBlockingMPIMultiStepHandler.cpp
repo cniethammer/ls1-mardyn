@@ -57,7 +57,7 @@ void NonBlockingMPIMultiStepHandler::performComputation() {
 		int max_threads = omp_get_max_threads();
 #pragma omp parallel num_threads(2)
 		{
-#pragma omp master
+#pragma omp masked
 			{
 				omp_set_num_threads(1);
 				global_simulation->timers()->start("SIMULATION_DECOMPOSITION");

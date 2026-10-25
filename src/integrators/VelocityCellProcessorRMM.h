@@ -51,12 +51,12 @@ public:
 
 	void initTraversal() {
 		#if defined(_OPENMP)
-		#pragma omp master
+		#pragma omp masked
 		#endif
 		{
 			_N = 0;
 			_summv2 = 0.0;
-		} // end pragma omp master
+		} // end pragma omp masked
 
 		Log::global_log->debug() << "VelocityCellProcessorRMM::initTraversal()." << std::endl;
 	}

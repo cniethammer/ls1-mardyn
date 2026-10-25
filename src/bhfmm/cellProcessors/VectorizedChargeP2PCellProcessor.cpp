@@ -73,12 +73,12 @@ void VectorizedChargeP2PCellProcessor::initTraversal() {
 	global_simulation->timers()->start("VECTORIZED_CHARGE_P2P_CELL_PROCESSOR_VCP2P");
 
 	#if defined(_OPENMP)
-	#pragma omp master
+	#pragma omp masked
 	#endif
 	{
 		_upotXpoles = 0.0;
 		_virial = 0.0;
-	} // end pragma omp master
+	} // end pragma omp masked
 
 }
 

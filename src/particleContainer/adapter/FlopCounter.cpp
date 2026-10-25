@@ -152,7 +152,7 @@ FlopCounter::~FlopCounter() {
 
 void FlopCounter::initTraversal() {
 	#if defined (_OPENMP)
-	#pragma omp master
+	#pragma omp masked
 	#endif
 	{
 		_currentCounts.clear();

@@ -119,12 +119,12 @@ void VectorizedLJP2PCellProcessor::initTraversal() {
 	global_simulation->timers()->start("VECTORIZED_LJP2P_CELL_PROCESSOR_VLJP2P");
 
 	#if defined(_OPENMP)
-	#pragma omp master
+	#pragma omp masked
 	#endif
 	{
 		_upot6lj = 0.0;
 		_virial = 0.0;
-	} // end pragma omp master
+	} // end pragma omp masked
 
 	Log::global_log->debug() << "VectorizedLJP2PCellProcessor::initTraversal()." << std::endl;
 }
