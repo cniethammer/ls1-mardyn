@@ -237,8 +237,8 @@ void Adios2Writer::initAdios2() {
 					component_elements_vec.emplace_back(site.getName());
 				}
 				std::string component_elements =
-					std::accumulate(component_elements_vec.begin(), component_elements_vec.end(), std::string(),
-									[](std::string& ss, std::string& s) { return ss.empty() ? s : ss + "," + s; });
+								std::accumulate(component_elements_vec.begin(), component_elements_vec.end(), std::string(),
+												[](const std::string& ss, const std::string& s) { return ss.empty() ? s : ss + "," + s; });
 
 				std::string component_id = "component_" + std::to_string(component.ID());
 				std::vector<std::array<double, 3>> adios_lj_centers;
