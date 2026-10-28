@@ -27,6 +27,7 @@
 #include "utils/Timer.h"
 #include "utils/xmlfileUnits.h"
 #include "utils/mardyn_assert.h"
+#include "utils/String_utils.h"
 
 #include <climits>
 #include <cstdint>

@@ -12,10 +12,6 @@
 #include "utils/Random.h"
 
 
-
-// plugins
-#include "plugins/PluginFactory.h"
-
 #if !defined (SIMULATION_SRC) or defined (IN_IDE_PARSER)
 class Simulation;
 /** Global pointer to the simulation object. Do not use directly. Instead use the reference. */

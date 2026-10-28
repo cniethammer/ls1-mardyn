@@ -24,6 +24,7 @@
 #include "particleContainer/ParticleContainer.h"
 #include "utils/mardyn_assert.h"
 #include "utils/Logger.h"
+#include "utils/String_utils.h"
 
 
 enum MoleculeFormat : uint32_t {

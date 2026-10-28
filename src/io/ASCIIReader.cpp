@@ -15,6 +15,7 @@
 #include "molecules/Molecule.h"
 #include "molecules/mixingrules/MixingRuleBase.h"
 #include "molecules/mixingrules/LorentzBerthelot.h"
+#include "utils/String_utils.h"
 
 #ifdef ENABLE_MPI
 #include "parallel/ParticleData.h"
