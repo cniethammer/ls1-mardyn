@@ -4,7 +4,6 @@
 #include <map>
 #include <string>
 #include <vector>
-#include "../Simulation.h"
 
 #include "../utils/Logger.h"
 #include "../utils/String_utils.h"
@@ -83,7 +82,6 @@ public:
 		if( existing != _pluginFactoryMap.end() ) {
 			return existing->second(); /* call createInstance for plugin */
 		}
-		MARDYN_EXIT("Requested plugin not found: " + pluginname + ". Is it enabled in CMake?");
 		return nullptr;
 	}
 
