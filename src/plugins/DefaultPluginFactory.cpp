@@ -1,11 +1,6 @@
 #include "DefaultPluginFactory.h"
 
-#include <map>
-#include <string>
-#include <vector>
-
 #include "utils/Logger.h"
-#include "utils/String_utils.h"
 
 // Output plugins
 #include "io/CavityWriter.h"
@@ -135,39 +130,4 @@ DefaultPluginFactory::DefaultPluginFactory() {
 #ifdef MAMICO_COUPLING
 	REGISTER_PLUGIN(MamicoCoupling);
 #endif
-}
-
-long DefaultPluginFactory::enablePlugins(std::list<PluginBase*>& _plugins, XMLfileUnits& xmlconfig, const std::string& nodepath) {
-	std::string oldpath = xmlconfig.getcurrentnodepath();
-	const auto numPluginsBefore = _plugins.size();
-
-	XMLfile::Query query = xmlconfig.query(nodepath);
-	unsigned long numPlugins = query.card();
-
-	Log::global_log->info() << "Number of plugins with path " << nodepath << ": " << numPlugins << std::endl;
-	if (numPlugins < 1) {
-		Log::global_log->warning() << "No plugins specified for path " << nodepath << "." << std::endl;
-	}
-
-	for (auto pluginIter = query.begin(); pluginIter; ++pluginIter) {
-		xmlconfig.changecurrentnode(pluginIter);
-		std::string pluginname("");
-		xmlconfig.getNodeValue("@name", pluginname);
-		bool enabled = true;
-		xmlconfig.getNodeValue("@enabled", enabled);
-		if (not enabled) {
-			Log::global_log->debug() << "skipping disabled plugin: " << pluginname << std::endl;
-			continue;
-		}
-		Log::global_log->info() << "Enabling plugin: " << pluginname << std::endl;
-
-		PluginBase* plugin = this->create(pluginname);
-
-		plugin->readXML(xmlconfig);
-		_plugins.push_back(plugin);
-	}
-
-	xmlconfig.changecurrentnode(oldpath);
-
-	return static_cast<long>(_plugins.size() - numPluginsBefore);
 }

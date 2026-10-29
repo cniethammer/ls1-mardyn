@@ -44,6 +44,7 @@
 
 #include "plugins/PluginBase.h"
 #include "plugins/DefaultPluginFactory.h"
+#include "plugins/PluginLoader.h"
 
 #include "io/ASCIIReader.h"
 #include "io/BinaryReader.h"
@@ -629,8 +630,8 @@ void Simulation::readXML(XMLfileUnits& xmlconfig) {
 	Log::global_log -> info() << "Successfully registered plugins." << std::endl;
 
 	long numPlugs = 0;
-	numPlugs += pluginFactory.enablePlugins(_plugins, xmlconfig, "plugin");
-	numPlugs += pluginFactory.enablePlugins(_plugins, xmlconfig, "output/outputplugin");
+	numPlugs += loadPlugins(pluginFactory, xmlconfig, "plugin", _plugins);
+	numPlugs += loadPlugins(pluginFactory, xmlconfig, "output/outputplugin", _plugins);
 	Log::global_log -> info() << "Number of enabled Plugins: " << numPlugs << std::endl;
 
 	Log::global_log -> info() << "Registering callbacks." << std::endl;
