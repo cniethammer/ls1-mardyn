@@ -12,24 +12,32 @@
 
 
 
-/** @brief macro used to simplify the registration of plugins in the constructor.
- * @param NAME class name of the plugin
+/** @brief Register plugin class NAME with the factory.
+ *
+ * Expands to registerPlugin(&NAME::createInstance); and can therefore only be used
+ * inside member functions of PluginFactory or derived classes.
+ * @param NAME  class name of the plugin; must provide a static createInstance() method.
  */
 #define REGISTER_PLUGIN(NAME) registerPlugin(&(NAME::createInstance));
 
 
-/** @brief Plugin Factory
+/** @brief Generic factory to create plugin objects by name.
  *
- * Provides a common interface to register plugins based on the template given as parameter.
- * The interface must include the following method:
+ * @tparam T  Common base class (interface) of the plugins managed by this factory.
+ *
+ * Plugins are identified by the string returned from their getPluginName() method,
+ * so T must provide:
  * \code{.cpp}
  *   virtual std::string getPluginName() = 0; // return the name of the plugin
  * \endcode
- * Also each plugin has to implement the following static method:
+ * Each plugin class additionally has to provide a static creator function:
  * \code{.cpp}
- *   static T* createInstance() { return new MyPlugin(); }  // return an instance object
+ *   static T* createInstance() { return new MyPlugin(); }
  * \endcode
- * Plugins are registered in the PluginFactory constructor using the REGISTER_PLUGIN(NAME) macro.
+ * Plugins are registered with the REGISTER_PLUGIN(NAME) macro, either in the constructor
+ * of a derived factory (see ObjectFactory) or in a specialization of registerDefaultPlugins().
+ * Names must be unique; later registrations with an already used name are ignored.
+ * Objects returned by create() are owned by the caller.
  */
 template <typename T>
 class PluginFactory {
@@ -67,7 +75,10 @@ public:
 	 */
 	void registerDefaultPlugins();
 
-	/** @brief Get all names of registered plugins */
+	/** @brief Get all names of registered plugins
+	 *
+	 * @return Names of all registered plugins; empty if none are registered.
+	*/
 	std::vector<std::string> getPluginNames() {
 		std::vector<std::string> pluginNames;
 		for(auto const &plugin : _pluginFactoryMap) {
@@ -76,7 +87,11 @@ public:
 		return pluginNames;
 	}
 
-	/** @brief Create a new instance of plugin */
+	/** @brief Create a new instance of plugin
+	 *
+	 * @param pluginname Name of the plugin
+	 * @return Newly allocated plugin instance, or nullptr if no plugin with this name is registered.
+	*/
 	T* create(std::string pluginname) {
 		auto existing = _pluginFactoryMap.find(pluginname);
 		if( existing != _pluginFactoryMap.end() ) {
