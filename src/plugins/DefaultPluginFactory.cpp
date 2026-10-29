@@ -189,12 +189,8 @@ long DefaultPluginFactory::enablePlugins(std::list<PluginBase*>& _plugins, XMLfi
 			}
 		}
 
-		if (plugin) {
-			plugin->readXML(xmlconfig);
-			_plugins.push_back(plugin);
-		} else {
-			Log::global_log->warning() << "Unknown plugin " << pluginname << std::endl;
-		}
+		plugin->readXML(xmlconfig);
+		_plugins.push_back(plugin);
 	}
 
 	xmlconfig.changecurrentnode(oldpath);

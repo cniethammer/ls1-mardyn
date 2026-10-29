@@ -26,11 +26,6 @@ void ObjectGenerator::readXML(XMLfileUnits& xmlconfig) {
 		Log::global_log->debug() << "Filler type: " << fillerType << std::endl;
 		ObjectFillerFactory objectFillerFactory;
 		_filler = std::shared_ptr<ObjectFillerBase>(objectFillerFactory.create(fillerType));
-		if(!_filler) {
-			std::ostringstream error_message;
-			error_message << "Object filler could not be created" << std::endl;
-			MARDYN_EXIT(error_message.str());
-		}
 		Log::global_log->debug() << "Using object filler of type: " << _filler->getPluginName() << std::endl;
 		_filler->readXML(xmlconfig);
 		xmlconfig.changecurrentnode("..");
@@ -46,11 +41,6 @@ void ObjectGenerator::readXML(XMLfileUnits& xmlconfig) {
 		Log::global_log->debug() << "Obj name: " << objectType << std::endl;
 		ObjectFactory objectFactory;
 		_object = std::shared_ptr<Object>(objectFactory.create(objectType));
-		if(!_object) {
-			std::ostringstream error_message;
-			error_message << "Unknown object type: " << objectType << std::endl;
-			MARDYN_EXIT(error_message.str());
-		}
 		Log::global_log->debug() << "Created object of type: " << _object->getPluginName() << std::endl;
 		_object->readXML(xmlconfig);
 		xmlconfig.changecurrentnode("..");

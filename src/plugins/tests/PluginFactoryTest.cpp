@@ -5,14 +5,13 @@
  * on any real plugin or on a simulation setup.
  */
 
-#include <memory>
-#include <string>
-#include <vector>
-
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_vector.hpp>
 #include <catch2/reporters/catch_reporter_event_listener.hpp>
 #include <catch2/reporters/catch_reporter_registrars.hpp>
+#include <memory>
+#include <string>
+#include <vector>
 
 #include "plugins/PluginFactory.h"
 #include "utils/Logger.h"
@@ -70,12 +69,20 @@ public:
 
 CATCH_REGISTER_LISTENER(GlobalLogListener)
 
-
 TEST_CASE("A new factory has no plugins", "[PluginFactory]") {
 	PluginFactory<DummyPluginBase> factory;
 
 	CHECK(factory.getPluginNames().empty());
-	CHECK(factory.create("DummyPluginA") == nullptr);
+}
+
+TEST_CASE("Factories do not share registered plugins", "[PluginFactory]") {
+	PluginFactory<DummyPluginBase> factoryA;
+	factoryA.registerPlugin(&DummyPluginA::createInstance);
+
+	PluginFactory<DummyPluginBase> factoryB;
+
+	CHECK(factoryB.getPluginNames().empty());
+	CHECK_THROWS_AS(factoryB.create("DummyPluginA"), PluginNotFoundError);
 }
 
 TEST_CASE("create() returns an instance of the registered plugin", "[PluginFactory]") {
@@ -89,13 +96,28 @@ TEST_CASE("create() returns an instance of the registered plugin", "[PluginFacto
 	CHECK(plugin->getPluginName() == "DummyPluginA");
 }
 
-TEST_CASE("create() returns nullptr for unknown plugin names", "[PluginFactory]") {
+TEST_CASE("create() throws PluginNotFoundError for unknown plugin names", "[PluginFactory]") {
 	PluginFactory<DummyPluginBase> factory;
 	factory.registerPlugin(&DummyPluginA::createInstance);
 
-	CHECK(factory.create("Unknown") == nullptr);
-	CHECK(factory.create("") == nullptr);
-	CHECK(factory.create("dummyplugina") == nullptr);  // names are case sensitive
+	CHECK_THROWS_AS(factory.create("Unknown"), PluginNotFoundError);
+	CHECK_THROWS_AS(factory.create(""), PluginNotFoundError);
+	CHECK_THROWS_AS(factory.create("dummyplugina"), PluginNotFoundError);  // names are case sensitive
+}
+
+TEST_CASE("PluginNotFoundError provides the requested and the available plugin names", "[PluginFactory]") {
+	PluginFactory<DummyPluginBase> factory;
+	factory.registerPlugin(&DummyPluginA::createInstance);
+	factory.registerPlugin(&DummyPluginB::createInstance);
+
+	try {
+		std::unique_ptr<DummyPluginBase> plugin(factory.create("Unknown"));
+		FAIL("create() did not throw");
+	} catch (const PluginNotFoundError& e) {
+		CHECK(e.pluginName() == "Unknown");
+		CHECK_THAT(e.availablePlugins(),
+		           Catch::Matchers::UnorderedEquals(std::vector<std::string>{"DummyPluginA", "DummyPluginB"}));
+	}
 }
 
 TEST_CASE("create() returns a new instance on every call", "[PluginFactory]") {
@@ -117,7 +139,7 @@ TEST_CASE("getPluginNames() lists all registered plugins", "[PluginFactory]") {
 
 	// order is unspecified
 	CHECK_THAT(factory.getPluginNames(),
-			   Catch::Matchers::UnorderedEquals(std::vector<std::string>{"DummyPluginA", "DummyPluginB"}));
+	           Catch::Matchers::UnorderedEquals(std::vector<std::string>{"DummyPluginA", "DummyPluginB"}));
 }
 
 TEST_CASE("Registering a name twice keeps the first plugin", "[PluginFactory]") {
@@ -137,7 +159,7 @@ TEST_CASE("REGISTER_PLUGIN registers plugins in a derived factory", "[PluginFact
 	DummyFactory factory;
 
 	CHECK_THAT(factory.getPluginNames(),
-			   Catch::Matchers::UnorderedEquals(std::vector<std::string>{"DummyPluginA", "DummyPluginB"}));
+	           Catch::Matchers::UnorderedEquals(std::vector<std::string>{"DummyPluginA", "DummyPluginB"}));
 
 	std::unique_ptr<DummyPluginBase> plugin(factory.create("DummyPluginB"));
 	REQUIRE(plugin != nullptr);

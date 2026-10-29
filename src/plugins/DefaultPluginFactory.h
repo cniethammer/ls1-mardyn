@@ -32,6 +32,7 @@ public:
 	 * @param nodepath   Node path (relative to the current node of @p xmlconfig) selecting
 	 *                   the plugin nodes, e.g. "plugin" or "output/outputplugin".
 	 * @return Number of plugins enabled, i.e. appended to @p _plugins; disabled plugins are not counted.
+	 * @throws PluginNotFoundError if an enabled node names a plugin that is not registered.
 	 */
 	long enablePlugins(std::list<PluginBase*>& _plugins, XMLfileUnits& xmlconfig, const std::string& nodepath);
 };
