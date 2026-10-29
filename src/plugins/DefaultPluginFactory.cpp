@@ -1,5 +1,4 @@
 #include "DefaultPluginFactory.h"
-#include "utils/mardyn_assert.h"
 
 #include <map>
 #include <string>
@@ -163,25 +162,6 @@ long DefaultPluginFactory::enablePlugins(std::list<PluginBase*>& _plugins, XMLfi
 		Log::global_log->info() << "Enabling plugin: " << pluginname << std::endl;
 
 		PluginBase* plugin = this->create(pluginname);
-
-		//@TODO: add plugin specific functions
-
-		// Special treatment of complex plugins
-		if (pluginname == "MmpldWriter") {
-			// @todo this should be handled in the MMPLD Writer readXML()
-			std::string sphere_representation = "simple";
-			xmlconfig.getNodeValue("@type", sphere_representation);
-			delete plugin;
-			if ("simple" == sphere_representation) {
-				plugin = new MmpldWriterSimpleSphere();
-			} else if ("multi" == sphere_representation) {
-				plugin = new MmpldWriterMultiSphere();
-			} else {
-				std::ostringstream error_message;
-				error_message << "[MMPLD Writer] Unknown sphere representation type: " << sphere_representation << std::endl;
-				MARDYN_EXIT(error_message.str());
-			}
-		}
 
 		plugin->readXML(xmlconfig);
 		_plugins.push_back(plugin);

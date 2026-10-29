@@ -44,26 +44,26 @@ std::string MmpldWriter::getOutputFilename() {
 
 MmpldWriter::MmpldWriter() :
 		_startTimestep(0), _writeFrequency(1000), _stopTimestep(std::numeric_limits<uint64_t>::max()), _writeBufferSize(32768), _outputPrefix("unknown"),
-		_bInitSphereData(ISD_READ_FROM_XML), _bWriteControlPrepared(false),
+		_bInitSphereData(ISD_READ_FROM_XML), _sphereRepresentation(SphereRepresentation::Simple), _bWriteControlPrepared(false),
 		_fileCount(1), _numFramesPerFile(0), _mmpldversion(MMPLD_DEFAULT_VERSION), _vertex_type(MMPLD_VERTEX_FLOAT_XYZ), _color_type(MMPLD_COLOR_NONE)
 {}
 
-MmpldWriter::MmpldWriter(uint64_t startTimestep, uint64_t writeFrequency, uint64_t stopTimestep, uint64_t numFramesPerFile,
-		std::string outputPrefix)
-		:	_startTimestep(startTimestep), _writeFrequency(writeFrequency), _stopTimestep(stopTimestep), _writeBufferSize(32768),
-		_outputPrefix(outputPrefix), _bInitSphereData(ISD_READ_FROM_XML), _bWriteControlPrepared(false),
-		_fileCount(1),_numFramesPerFile(numFramesPerFile),  _vertex_type(MMPLD_VERTEX_FLOAT_XYZ),
-		_color_type(MMPLD_COLOR_NONE)
-{
-	if (0 == _writeFrequency) {
-		std::ostringstream error_message;
-		error_message << "[MMPLD Writer] writefrequency must not be 0" << std::endl;
-		MARDYN_EXIT(error_message.str());
-	}
-}
-
 void MmpldWriter::readXML(XMLfileUnits& xmlconfig)
 {
+	// sphere representation
+	std::string sphere_representation = "simple";
+	xmlconfig.getNodeValue("@type", sphere_representation);
+	if ("simple" == sphere_representation) {
+		_sphereRepresentation = SphereRepresentation::Simple;
+	} else if ("multi" == sphere_representation) {
+		_sphereRepresentation = SphereRepresentation::Multi;
+	} else {
+		std::ostringstream error_message;
+		error_message << "[MMPLD Writer] Unknown sphere representation type: " << sphere_representation << std::endl;
+		MARDYN_EXIT(error_message.str());
+	}
+	Log::global_log->info() << "[MMPLD Writer] Sphere representation: " << sphere_representation << std::endl;
+
 	// color type
 	_color_type = MMPLD_COLOR_NONE;
 	uint32_t ctype = 0;
@@ -511,8 +511,42 @@ void MmpldWriter::write_particle_list_header(uint64_t particle_count, int sphere
 }
 
 
-// derived classes
-void MmpldWriterSimpleSphere::CalcNumSpheresPerType(ParticleContainer* particleContainer, uint64_t* numSpheresPerType)
+void MmpldWriter::SetNumSphereTypes()
+{
+	switch (_sphereRepresentation) {
+		case SphereRepresentation::Simple:
+			_numSphereTypes = _numComponents;
+			break;
+		case SphereRepresentation::Multi:
+			_numSphereTypes = _numSitesTotal;
+			break;
+	}
+}
+
+void MmpldWriter::CalcNumSpheresPerType(ParticleContainer* particleContainer, uint64_t* numSpheresPerType)
+{
+	switch (_sphereRepresentation) {
+		case SphereRepresentation::Simple:
+			CalcNumSpheresPerTypeSimple(particleContainer, numSpheresPerType);
+			break;
+		case SphereRepresentation::Multi:
+			CalcNumSpheresPerTypeMulti(particleContainer, numSpheresPerType);
+			break;
+	}
+}
+
+bool MmpldWriter::GetSpherePos(float *spherePos, Molecule* mol, uint8_t& nSphereTypeIndex)
+{
+	switch (_sphereRepresentation) {
+		case SphereRepresentation::Simple:
+			return GetSpherePosSimple(spherePos, mol, nSphereTypeIndex);
+		case SphereRepresentation::Multi:
+			return GetSpherePosMulti(spherePos, mol, nSphereTypeIndex);
+	}
+	return false;
+}
+
+void MmpldWriter::CalcNumSpheresPerTypeSimple(ParticleContainer* particleContainer, uint64_t* numSpheresPerType)
 {
 	for (auto mol = particleContainer->iterator(ParticleIterator::ONLY_INNER_AND_BOUNDARY); mol.isValid(); ++mol) {
 		uint8_t cid = mol->componentid();
@@ -520,7 +554,7 @@ void MmpldWriterSimpleSphere::CalcNumSpheresPerType(ParticleContainer* particleC
 	}
 }
 
-bool MmpldWriterSimpleSphere::GetSpherePos(float *spherePos, Molecule* mol, uint8_t& nSphereTypeIndex)
+bool MmpldWriter::GetSpherePosSimple(float *spherePos, Molecule* mol, uint8_t& nSphereTypeIndex)
 {
 	uint8_t cid = mol->componentid();
 	for (unsigned short d = 0; d < 3; ++d) spherePos[d] = (float)mol->r(d);
@@ -530,7 +564,7 @@ bool MmpldWriterSimpleSphere::GetSpherePos(float *spherePos, Molecule* mol, uint
 }
 
 
-void MmpldWriterMultiSphere::CalcNumSpheresPerType(ParticleContainer* particleContainer, uint64_t* numSpheresPerType)
+void MmpldWriter::CalcNumSpheresPerTypeMulti(ParticleContainer* particleContainer, uint64_t* numSpheresPerType)
 {
 	for (auto mol = particleContainer->iterator(ParticleIterator::ONLY_INNER_AND_BOUNDARY); mol.isValid(); ++mol) {
 		uint8_t cid = mol->componentid();
@@ -540,7 +574,7 @@ void MmpldWriterMultiSphere::CalcNumSpheresPerType(ParticleContainer* particleCo
 	}
 }
 
-bool MmpldWriterMultiSphere::GetSpherePos(float *spherePos, Molecule* mol, uint8_t& nSphereTypeIndex)
+bool MmpldWriter::GetSpherePosMulti(float *spherePos, Molecule* mol, uint8_t& nSphereTypeIndex)
 {
 	bool ret = false;
 	uint8_t cid = mol->componentid();
