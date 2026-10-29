@@ -98,7 +98,6 @@ private:
 	std::uint64_t _stopTimestep;
 	long _writeBufferSize;
 	std::string _outputPrefix;
-	std::string _timestampString;
 	std::uint32_t _frameCount;
 	std::uint8_t  _numComponents;
 	std::uint8_t  _numSitesTotal;
