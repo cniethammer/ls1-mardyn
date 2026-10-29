@@ -1,5 +1,5 @@
-#ifndef SRC_UTILS_PLUGINFACTORY_H_
-#define SRC_UTILS_PLUGINFACTORY_H_
+#ifndef SRC_PLUGINS_PLUGINFACTORY_H_
+#define SRC_PLUGINS_PLUGINFACTORY_H_
 
 #include <map>
 #include <string>
@@ -102,4 +102,4 @@ public:
 
 	long enablePlugins(std::list<PluginBase*>& _plugins, XMLfileUnits& xmlconfig, std::string category, Domain* _domain);
 };
-#endif  // SRC_UTILS_PLUGINFACTORY_H_
+#endif  // SRC_PLUGINS_PLUGINFACTORY_H_
