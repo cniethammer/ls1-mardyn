@@ -45,10 +45,6 @@
 #include "plugins/PluginBase.h"
 #include "plugins/DefaultPluginFactory.h"
 
-#include "io/MmpldWriter.h"
-#include "io/RDF.h"
-#include "io/FlopRateWriter.h"
-
 #include "io/ASCIIReader.h"
 #include "io/BinaryReader.h"
 #include "io/CubicGridGeneratorInternal.h"
