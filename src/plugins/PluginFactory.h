@@ -8,8 +8,6 @@
 #include "../utils/Logger.h"
 #include "../utils/String_utils.h"
 
-#include "PluginBase.h"
-
 
 
 /** @brief Register plugin class NAME with the factory.
@@ -34,8 +32,8 @@
  * \code{.cpp}
  *   static T* createInstance() { return new MyPlugin(); }
  * \endcode
- * Plugins are registered with the REGISTER_PLUGIN(NAME) macro, either in the constructor
- * of a derived factory (see ObjectFactory) or in a specialization of registerDefaultPlugins().
+ * Plugins are registered with the REGISTER_PLUGIN(NAME) macro in the constructor
+ * of a derived factory (see DefaultPluginFactory, ObjectFactory).
  * Names must be unique; later registrations with an already used name are ignored.
  * Objects returned by create() are owned by the caller.
  */
@@ -69,12 +67,6 @@ public:
 		_pluginFactoryMap[pluginname] = createInstance;
 	}
 
-	/** @brief Register a plugin
-	 *
-	 * @param createInstance  pointer to a function returning an instance of the plugin object.
-	 */
-	void registerDefaultPlugins();
-
 	/** @brief Get all names of registered plugins
 	 *
 	 * @return Names of all registered plugins; empty if none are registered.
@@ -99,7 +91,5 @@ public:
 		}
 		return nullptr;
 	}
-
-	long enablePlugins(std::list<PluginBase*>& _plugins, XMLfileUnits& xmlconfig, std::string category, Domain* _domain);
 };
 #endif  // SRC_PLUGINS_PLUGINFACTORY_H_

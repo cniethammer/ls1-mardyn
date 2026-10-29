@@ -43,7 +43,7 @@
 #include "integrators/LeapfrogRMM.h"
 
 #include "plugins/PluginBase.h"
-#include "plugins/PluginFactory.h"
+#include "plugins/DefaultPluginFactory.h"
 
 #include "io/MmpldWriter.h"
 #include "io/RDF.h"
@@ -629,13 +629,12 @@ void Simulation::readXML(XMLfileUnits& xmlconfig) {
 
 	Log::global_log -> info() << "Registering default plugins..." << std::endl;
     // REGISTERING/ENABLING PLUGINS
-	PluginFactory<PluginBase> pluginFactory;
-    pluginFactory.registerDefaultPlugins();
+	DefaultPluginFactory pluginFactory;
 	Log::global_log -> info() << "Successfully registered plugins." << std::endl;
 
 	long numPlugs = 0;
-	numPlugs += pluginFactory.enablePlugins(_plugins, xmlconfig, "plugin", _domain);
-	numPlugs += pluginFactory.enablePlugins(_plugins, xmlconfig, "output/outputplugin", _domain);
+	numPlugs += pluginFactory.enablePlugins(_plugins, xmlconfig, "plugin");
+	numPlugs += pluginFactory.enablePlugins(_plugins, xmlconfig, "output/outputplugin");
 	Log::global_log -> info() << "Number of enabled Plugins: " << numPlugs << std::endl;
 
 	Log::global_log -> info() << "Registering callbacks." << std::endl;

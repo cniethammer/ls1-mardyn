@@ -1,9 +1,4 @@
-//
-// Created by Moritz Kruegener on 4/17/2018.
-//
-
-#include "PluginFactory.h"
-#include "Domain.h"
+#include "DefaultPluginFactory.h"
 #include "utils/mardyn_assert.h"
 
 #include <map>
@@ -77,12 +72,7 @@
 #include "plugins/MamicoCoupling.h"
 #endif
 
-/** @brief Register all default plugins with base PluginBase
- *
- * @param createInstance  pointer to a function returning an instance of the plugin object.
- */
-template <>
-void PluginFactory<PluginBase>::registerDefaultPlugins() {
+DefaultPluginFactory::DefaultPluginFactory() {
 	Log::global_log->debug() << "REGISTERING PLUGINS" << std::endl;
 
 #ifdef ENABLE_ADIOS2
@@ -148,19 +138,15 @@ void PluginFactory<PluginBase>::registerDefaultPlugins() {
 #endif
 }
 
-/** @brief Enable selected plugins */
-template <>
-long PluginFactory<PluginBase>::enablePlugins(std::list<PluginBase*>& _plugins, XMLfileUnits& xmlconfig,
-											  std::string category, Domain* _domain) {
+long DefaultPluginFactory::enablePlugins(std::list<PluginBase*>& _plugins, XMLfileUnits& xmlconfig, const std::string& nodepath) {
 	std::string oldpath = xmlconfig.getcurrentnodepath();
 
-	// plugins
-	long numPlugins = 0;
-	XMLfile::Query query = xmlconfig.query(category);
-	numPlugins = query.card();
-	Log::global_log->info() << "Number of plugins with tag " << category << ": " << numPlugins << std::endl;
+	XMLfile::Query query = xmlconfig.query(nodepath);
+	unsigned long numPlugins = query.card();
+
+	Log::global_log->info() << "Number of plugins with path " << nodepath << ": " << numPlugins << std::endl;
 	if (numPlugins < 1) {
-		Log::global_log->warning() << "No plugins specified for tag " << category << "." << std::endl;
+		Log::global_log->warning() << "No plugins specified for path " << nodepath << "." << std::endl;
 	}
 
 	for (auto pluginIter = query.begin(); pluginIter; ++pluginIter) {

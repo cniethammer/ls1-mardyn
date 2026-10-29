@@ -1,6 +1,7 @@
 target_sources(MarDyn
     PRIVATE
         COMaligner.cpp
+        DefaultPluginFactory.cpp
         DirectedPM.cpp
         Dropaccelerator.cpp
         Dropaligner.cpp
@@ -14,7 +15,6 @@ target_sources(MarDyn
         Mirror.cpp
         MirrorSystem.cpp
         Permittivity.cpp
-        PluginFactory.cpp
         SpatialProfile.cpp
         VectorizationTuner.cpp
         WallPotential.cpp
