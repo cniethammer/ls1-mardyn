@@ -13,13 +13,6 @@
 #include "utils/MPI_Info_object.h"
 #endif
 
-enum InitSphereData : std::uint8_t
-{
-	ISD_USE_DEFAULT = 1,
-	ISD_READ_FROM_FILE = 2,
-	ISD_READ_FROM_XML = 3,
-};
-
 enum MMPLD_Vertex_type : std::uint8_t {
 	MMPLD_VERTEX_NONE       = 0,
 	MMPLD_VERTEX_FLOAT_XYZ  = 1,
@@ -73,10 +66,6 @@ public:
 	}
 	static PluginBase* createInstance() { return new MmpldWriter(); }
 
-	void SetInitSphereDataParameters(const std::uint8_t &bInitSphereData, const std::string &strSphereDataFilename) {
-		_bInitSphereData = bInitSphereData; _strSphereDataFilename = strSphereDataFilename;
-	}
-
 private:
 	void SetNumSphereTypes();
 	void CalcNumSpheresPerType(ParticleContainer* particleContainer, std::uint64_t* numSpheresPerType);
@@ -85,8 +74,6 @@ private:
 	bool GetSpherePosSimple(float *spherePos, Molecule* mol, std::uint8_t& nSphereTypeIndex);
 	void CalcNumSpheresPerTypeMulti(ParticleContainer* particleContainer, std::uint64_t* numSpheresPerType);
 	bool GetSpherePosMulti(float *spherePos, Molecule* mol, std::uint8_t& nSphereTypeIndex);
-
-	void InitSphereData();
 
 	std::string getOutputFilename();
 	void MultiFileApproachReset(ParticleContainer* particleContainer,
@@ -119,8 +106,6 @@ private:
 	std::vector<std::uint64_t> _seekTable;
 	std::vector<std::uint8_t> _numSitesPerComp;
 	std::vector<std::uint8_t> _nCompSitesOffset;
-	std::string _strSphereDataFilename;
-	std::uint8_t _bInitSphereData;
 	SphereRepresentation _sphereRepresentation;
 	bool _bWriteControlPrepared;
 

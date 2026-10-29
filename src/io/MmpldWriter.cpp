@@ -44,7 +44,7 @@ std::string MmpldWriter::getOutputFilename() {
 
 MmpldWriter::MmpldWriter() :
 		_startTimestep(0), _writeFrequency(1000), _stopTimestep(std::numeric_limits<uint64_t>::max()), _writeBufferSize(32768), _outputPrefix("unknown"),
-		_bInitSphereData(ISD_READ_FROM_XML), _sphereRepresentation(SphereRepresentation::Simple), _bWriteControlPrepared(false),
+		_sphereRepresentation(SphereRepresentation::Simple), _bWriteControlPrepared(false),
 		_fileCount(1), _numFramesPerFile(0), _mmpldversion(MMPLD_DEFAULT_VERSION), _vertex_type(MMPLD_VERTEX_FLOAT_XYZ), _color_type(MMPLD_COLOR_NONE)
 {}
 
@@ -175,8 +175,6 @@ void MmpldWriter::init(ParticleContainer *particleContainer,
 	}
 	Log::global_log->debug() << "[MMPLD Writer] Total number of sites taken into account: " << unsigned(_numSitesTotal) << std::endl;
 
-	// init radius and color of spheres
-	this->InitSphereData();
 	this->SetNumSphereTypes();
 
 	std::string filename = getOutputFilename();
@@ -325,32 +323,6 @@ void MmpldWriter::endStep(ParticleContainer *particleContainer,
 	std::string filename = getOutputFilename();
 	Log::global_log->debug() << "[MMPLD Writer] Writing MMPLD frame " << _frameCount << " for simstep " << simstep << " to file " << filename << std::endl;
 	write_frame(particleContainer, domainDecomp);
-}
-
-void MmpldWriter::InitSphereData()
-{
-	if(_bInitSphereData == ISD_READ_FROM_XML)
-		return;
-	else if(_bInitSphereData == ISD_USE_DEFAULT)
-	{
-		for(uint8_t i=0; i<6; i++) {
-			_global_radius.push_back(0.5);
-		}
-		//                            R    G    B  alpha
-		std::array<uint8_t, 4> red = { 255, 0, 0, 255 };
-		_global_rgba.push_back(red);
-		std::array<uint8_t, 4> lightblue = { 0, 205, 255, 255 };
-		_global_rgba.push_back(lightblue);
-		std::array<uint8_t, 4> blue = { 255, 0, 255, 255 };
-		_global_rgba.push_back(blue);
-		std::array<uint8_t, 4> green = { 0, 155, 0, 255 };
-		_global_rgba.push_back(green);
-		std::array<uint8_t, 4> purple = { 105, 0, 205, 255 };
-		_global_rgba.push_back(purple);
-		std::array<uint8_t, 4> orange = { 255, 125, 0, 255 };
-		_global_rgba.push_back(orange);
-		return;
-	}
 }
 
 void MmpldWriter::MultiFileApproachReset(ParticleContainer* particleContainer,
