@@ -140,6 +140,7 @@ DefaultPluginFactory::DefaultPluginFactory() {
 
 long DefaultPluginFactory::enablePlugins(std::list<PluginBase*>& _plugins, XMLfileUnits& xmlconfig, const std::string& nodepath) {
 	std::string oldpath = xmlconfig.getcurrentnodepath();
+	const auto numPluginsBefore = _plugins.size();
 
 	XMLfile::Query query = xmlconfig.query(nodepath);
 	unsigned long numPlugins = query.card();
@@ -198,5 +199,5 @@ long DefaultPluginFactory::enablePlugins(std::list<PluginBase*>& _plugins, XMLfi
 
 	xmlconfig.changecurrentnode(oldpath);
 
-	return numPlugins;
+	return static_cast<long>(_plugins.size() - numPluginsBefore);
 }
