@@ -5,7 +5,6 @@
 
 long loadPlugins(PluginFactory<PluginBase>& factory, XMLfileUnits& xmlconfig, const std::string& nodepath,
                  std::list<PluginBase*>& plugins) {
-	std::string oldpath = xmlconfig.getcurrentnodepath();
 	const auto numPluginsBefore = plugins.size();
 
 	XMLfile::Query query = xmlconfig.query(nodepath);
@@ -17,7 +16,7 @@ long loadPlugins(PluginFactory<PluginBase>& factory, XMLfileUnits& xmlconfig, co
 	}
 
 	for (auto pluginIter = query.begin(); pluginIter; ++pluginIter) {
-		xmlconfig.changecurrentnode(pluginIter);
+		auto pluginNode = xmlconfig.scopedChangeCurrentNode(pluginIter);
 		std::string pluginname("");
 		xmlconfig.getNodeValue("@name", pluginname);
 		bool enabled = true;
@@ -33,8 +32,6 @@ long loadPlugins(PluginFactory<PluginBase>& factory, XMLfileUnits& xmlconfig, co
 		plugin->readXML(xmlconfig);
 		plugins.push_back(plugin);
 	}
-
-	xmlconfig.changecurrentnode(oldpath);
 
 	return static_cast<long>(plugins.size() - numPluginsBefore);
 }

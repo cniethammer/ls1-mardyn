@@ -57,6 +57,7 @@ public:
 
 	class Query;
 	//class Query::const_iterator; forward declaration not possible...
+	class CurrentNodeGuard;
 
 
 //+XMLfile::Node----------------------------------------------------------------
@@ -452,6 +453,23 @@ public:
 	/// \param Query::const_iterator&	query iterator pointing to a node
 	/// \return bool	done?
 	bool changecurrentnode(const Query::const_iterator& pos);
+	/// \brief set current node for the lifetime of the returned guard
+	/// like changecurrentnode(), but the previous current node is restored when the returned guard is destroyed,
+	/// also if the scope is left by an exception
+	/// \code{.cpp}
+	///   if (auto node = xmlconfig.scopedChangeCurrentNode("writecontrol")) {
+	///       xmlconfig.getNodeValue("start", start);
+	///   }  // previous current node restored here
+	/// \endcode
+	/// \param std::string&	node path
+	/// \return CurrentNodeGuard	guard converting to true if the node was found and became the current node
+	[[nodiscard]] CurrentNodeGuard scopedChangeCurrentNode(const std::string& nodepath);
+	/// \brief set current node for the lifetime of the returned guard
+	/// like changecurrentnode(), but the previous current node is restored when the returned guard is destroyed,
+	/// also if the scope is left by an exception
+	/// \param Query::const_iterator&	query iterator pointing to a node
+	/// \return CurrentNodeGuard	guard converting to true if the node became the current node
+	[[nodiscard]] CurrentNodeGuard scopedChangeCurrentNode(const Query::const_iterator& pos);
 	/// \brief get current node path
 	///
 	/// \return std::string	node path
@@ -631,6 +649,47 @@ private:
 
 };
 //-XMLfile======================================================================
+
+
+//+XMLfile::CurrentNodeGuard----------------------------------------------------
+/// \brief restore the current node of an XMLfile when leaving the scope
+/// Created by XMLfile::scopedChangeCurrentNode(). Changes the current node on construction and restores the
+/// previous current node on destruction, also if the scope is left by an exception.
+/// \note The XMLfile must not be re-initialized (initfile(), initstring()) while a guard is alive.
+class XMLfile::CurrentNodeGuard
+{
+	friend class XMLfile;
+public:
+	~CurrentNodeGuard() { m_xmlfile.m_currentnode = m_previousnode; }
+
+	CurrentNodeGuard(const CurrentNodeGuard&) = delete;
+	CurrentNodeGuard& operator=(const CurrentNodeGuard&) = delete;
+
+	/// \brief check if the requested node was found
+	/// \return bool	true if the requested node was found and became the current node
+	explicit operator bool() const { return m_found; }
+
+private:
+	CurrentNodeGuard(XMLfile& xmlfile, const std::string& nodepath)
+		: m_xmlfile(xmlfile), m_previousnode(xmlfile.m_currentnode), m_found(xmlfile.changecurrentnode(nodepath) > 0) {}
+	CurrentNodeGuard(XMLfile& xmlfile, const Query::const_iterator& pos)
+		: m_xmlfile(xmlfile), m_previousnode(xmlfile.m_currentnode), m_found(xmlfile.changecurrentnode(pos)) {}
+
+	XMLfile& m_xmlfile;
+	Node m_previousnode;
+	bool m_found;
+};
+//-XMLfile::CurrentNodeGuard----------------------------------------------------
+
+inline XMLfile::CurrentNodeGuard XMLfile::scopedChangeCurrentNode(const std::string& nodepath)
+{
+	return CurrentNodeGuard(*this, nodepath);
+}
+
+inline XMLfile::CurrentNodeGuard XMLfile::scopedChangeCurrentNode(const Query::const_iterator& pos)
+{
+	return CurrentNodeGuard(*this, pos);
+}
 
 /// \brief write a node to a stream
 /// write XML node data to an output stream

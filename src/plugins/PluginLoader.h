@@ -14,7 +14,7 @@ class XMLfileUnits;
  * For every node matching @p nodepath, the plugin given by the attribute @c name is created
  * by @p factory, its readXML() is called with the node, and it is appended to @p plugins.
  * Nodes with attribute @c enabled="false" are skipped.
- * The current node of @p xmlconfig is restored on return.
+ * The current node of @p xmlconfig is restored on return, also if an exception is thrown.
  *
  * \code{.xml}
    <plugin name="RDF" enabled="yes"> ... </plugin>
