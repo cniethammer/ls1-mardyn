@@ -105,25 +105,6 @@
         <outputprefix>megamol</outputprefix>
       </outputplugin>
 -->
-      <outputplugin name="DomainProfiles">
-        <outputprefix>profile</outputprefix>
-        <writefrequency>10</writefrequency>
-        <timesteps>
-          <init>0</init>
-          <recording>1</recording>
-        </timesteps>
-        <units>
-          <x>1</x>
-          <y>200</y>
-          <z>1</z>
-        </units>
-        <options>
-          <option keyword="profileVirial">1</option>
-        </options>
-        <components>
-          <component id="1"/>
-        </components>
-      </outputplugin>
       <outputplugin name="VTKMoleculeWriter">
       	<outputprefix>vtkOutput</outputprefix>
       	<writefrequency>10</writefrequency>

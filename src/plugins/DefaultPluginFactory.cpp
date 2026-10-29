@@ -162,12 +162,6 @@ long DefaultPluginFactory::enablePlugins(std::list<PluginBase*>& _plugins, XMLfi
 		}
 		Log::global_log->info() << "Enabling plugin: " << pluginname << std::endl;
 
-		// Allowing an alias for a plugin. Not sure why this exists...
-		if (pluginname == "DomainProfiles") {
-			pluginname = "DensityProfileWriter";
-			Log::global_log->warning() << "DomainProfiles doesn't exist but is mapped to DensityProfileWriter!\n";
-		}
-
 		PluginBase* plugin = this->create(pluginname);
 
 		//@TODO: add plugin specific functions
