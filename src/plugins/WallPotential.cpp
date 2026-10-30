@@ -64,10 +64,9 @@ void WallPotential::readXML(XMLfileUnits &xmlconfig) {
         for (auto &&bi : _bConsiderComponent)
             bi = false;
 
-        std::string oldpath = xmlconfig.getcurrentnodepath();
         XMLfile::Query::const_iterator componentIter;
         for (componentIter = query.begin(); componentIter; componentIter++) {
-            xmlconfig.changecurrentnode(componentIter);
+            auto componentNode = xmlconfig.scopedChangeCurrentNode(componentIter);
             unsigned int cid;
             xmlconfig.getNodeValue("@id", cid);
             xmlconfig.getNodeValue("xi", xi_sf.at(cid - 1));
@@ -76,7 +75,6 @@ void WallPotential::readXML(XMLfileUnits &xmlconfig) {
             Log::global_log->info() << "[WallPotential] " << cid << " " << xi_sf.at(cid - 1) << " " << eta_sf.at(cid - 1)
                                << " " << std::endl;
         }
-        xmlconfig.changecurrentnode(oldpath);
     }
 
 

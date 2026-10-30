@@ -101,11 +101,10 @@ void MmpldWriter::readXML(XMLfileUnits& xmlconfig)
 		error_message << "[MMPLD Writer] No site parameters specified." << std::endl;
 		MARDYN_EXIT(error_message.str());
 	}
-	std::string oldpath = xmlconfig.getcurrentnodepath();
 	XMLfile::Query::const_iterator outputSiteIter;
 	for( outputSiteIter = query.begin(); outputSiteIter; outputSiteIter++ )
 	{
-		xmlconfig.changecurrentnode( outputSiteIter );
+		auto siteNode = xmlconfig.scopedChangeCurrentNode(outputSiteIter);
 		float radius = 0.;
 		int r = 0, g = 0, b = 0, alpha = 0;
 		float intensity_min = 0., intensity_max = 0.;
@@ -124,14 +123,13 @@ void MmpldWriter::readXML(XMLfileUnits& xmlconfig)
 		_global_intensity_range.push_back(intRange);
 	}
 
-	if(xmlconfig.changecurrentnode("mpi_info")) {
+	if(auto mpiInfoNode = xmlconfig.scopedChangeCurrentNode("mpi_info")) {
 #ifdef ENABLE_MPI
 		Log::global_log->info() << "[MMPLD Writer] Setting MPI info object for IO" << std::endl;
 		_mpiinfo.readXML(xmlconfig);
 #else
 		Log::global_log->info() << "[MMPLD Writer] mpi_info only used in parallel/MPI version" << std::endl;
 #endif
-		xmlconfig.changecurrentnode("..");
 	}
 }
 

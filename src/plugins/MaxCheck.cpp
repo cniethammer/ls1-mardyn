@@ -80,10 +80,9 @@ void MaxCheck::readXML(XMLfileUnits& xmlconfig) {
 		error_message << "[MaxCheck] No target parameters specified. Program exit ..." << std::endl;
 		MARDYN_EXIT(error_message.str());
 	}
-	std::string oldpath = xmlconfig.getcurrentnodepath();
 	XMLfile::Query::const_iterator nodeIter;
 	for (nodeIter = query.begin(); nodeIter; nodeIter++) {
-		xmlconfig.changecurrentnode(nodeIter);
+		auto targetNode = xmlconfig.scopedChangeCurrentNode(nodeIter);
 
 		uint32_t cid_ub;
 		MaxVals mv;

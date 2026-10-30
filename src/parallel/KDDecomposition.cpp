@@ -195,14 +195,9 @@ void KDDecomposition::readXML(XMLfileUnits& xmlconfig) {
 
 	DomainDecompMPIBase::readXML(xmlconfig);
 
-	std::string oldPath(xmlconfig.getcurrentnodepath());
-
-	xmlconfig.changecurrentnode("../datastructure");
+	auto datastructureNode = xmlconfig.scopedChangeCurrentNode("../datastructure");
 	xmlconfig.getNodeValue("cellsInCutoffRadius", _cellsInCutoffRadius);
 	Log::global_log->info() << "KDDecomposition using cellsInCutoffRadius: " << _cellsInCutoffRadius << std::endl;
-
-	// reset path
-	xmlconfig.changecurrentnode(oldPath);
 }
 
 void KDDecomposition::prepareNonBlockingStage(bool /*forceRebalancing*/,

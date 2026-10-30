@@ -33,14 +33,12 @@ void MultiObjectGenerator::readXML(XMLfileUnits& xmlconfig) {
 
 	XMLfile::Query query = xmlconfig.query("objectgenerator");
 	Log::global_log->info() << "Number of sub-objectgenerators: " << query.card() << std::endl;
-	std::string oldpath = xmlconfig.getcurrentnodepath();
 	for(auto generatorIter = query.begin(); generatorIter; ++generatorIter) {
-		xmlconfig.changecurrentnode(generatorIter);
+		auto generatorNode = xmlconfig.scopedChangeCurrentNode(generatorIter);
 		ObjectGenerator* generator = new ObjectGenerator();
 		generator->readXML(xmlconfig);
 		_generators.push_back(generator);
 	}
-	xmlconfig.changecurrentnode(oldpath);
 }
 
 

@@ -192,7 +192,7 @@ void SampleRegion::readXML(XMLfileUnits& xmlconfig)
 	XMLfile::Query::const_iterator outputSamplingIter;
 	for( outputSamplingIter = query.begin(); outputSamplingIter != query.end(); outputSamplingIter++ )
 	{
-		xmlconfig.changecurrentnode( outputSamplingIter );
+		auto samplingNode = xmlconfig.scopedChangeCurrentNode(outputSamplingIter);
 		std::string strSamplingModuleType = "unknown";
 		xmlconfig.getNodeValue("@type", strSamplingModuleType);
 
@@ -295,8 +295,7 @@ void SampleRegion::readXML(XMLfileUnits& xmlconfig)
 
 			// velocity dicretization
 			{
-				std::string oldpath = xmlconfig.getcurrentnodepath();
-				xmlconfig.changecurrentnode("discretizations");
+				auto discretizationsNode = xmlconfig.scopedChangeCurrentNode("discretizations");
 				uint32_t numDiscretizations = 0;
 				XMLfile::Query query_vd = xmlconfig.query("discretization");
 				numDiscretizations = query_vd.card();
@@ -309,7 +308,7 @@ void SampleRegion::readXML(XMLfileUnits& xmlconfig)
 				XMLfile::Query::const_iterator nodeIter;
 				for( nodeIter = query_vd.begin(); nodeIter != query_vd.end(); nodeIter++ )
 				{
-					xmlconfig.changecurrentnode(nodeIter);
+					auto discretizationNode = xmlconfig.scopedChangeCurrentNode(nodeIter);
 					uint32_t cid = 0;
 					bool bVal = xmlconfig.getNodeValue("@cid", cid);
 					if( (cid > _numComponents) || ((not bVal) && (not _boolSingleComp)) ){
@@ -330,7 +329,6 @@ void SampleRegion::readXML(XMLfileUnits& xmlconfig)
 					xmlconfig.getNodeValue("maxvalue", csp.dVeloMax);
 
 				}
-				xmlconfig.changecurrentnode(oldpath);
 			}
 
 			Log::global_log->info() << "RegionSampling->region["<<this->GetID()-1<<"]->sampling('"<<strSamplingModuleType<<"'): Start sampling from simstep: " << _initSamplingVDF << std::endl;
@@ -442,11 +440,10 @@ void SampleRegion::readXML(XMLfileUnits& xmlconfig)
 						"expected: 2. Program exit ..." << std::endl;
 				MARDYN_EXIT(error_message.str());
 			}
-			std::string oldpath = xmlconfig.getcurrentnodepath();
 			XMLfile::Query::const_iterator outputSubdivisionIter;
 			for( outputSubdivisionIter = query_sd.begin(); outputSubdivisionIter != query_sd.end(); outputSubdivisionIter++ )
 			{
-				xmlconfig.changecurrentnode( outputSubdivisionIter );
+				auto subdivisionNode = xmlconfig.scopedChangeCurrentNode(outputSubdivisionIter);
 				bInputIsValid = true;
 				std::string strSubdivisionType;
 				std::string strSubdivisionDim;
@@ -493,7 +490,6 @@ void SampleRegion::readXML(XMLfileUnits& xmlconfig)
 					MARDYN_EXIT(error_message.str());
 				}
 			}  // for( outputSubdivisionIter = query.begin(); outputSubdivisionIter; outputSubdivisionIter++ )
-			xmlconfig.changecurrentnode(oldpath);
 		}
 		else
 		{
@@ -2072,14 +2068,13 @@ void RegionSampling::readXML(XMLfileUnits& xmlconfig)
 		error_message << "RegionSampling: No region parameters specified. Program exit ..." << std::endl;
 		MARDYN_EXIT(error_message.str());
 	}
-	std::string oldpath = xmlconfig.getcurrentnodepath();
 	XMLfile::Query::const_iterator outputRegionIter;
 	for( outputRegionIter = query.begin(); outputRegionIter; outputRegionIter++ )
 	{
 		std::vector<double> lc(3, 0.);
 		std::vector<double> uc(3, 0.);
 
-		xmlconfig.changecurrentnode( outputRegionIter );
+		auto regionNode = xmlconfig.scopedChangeCurrentNode(outputRegionIter);
 		SampleRegion* region = new SampleRegion(this, lc.data(), uc.data() );
 		region->readXML(xmlconfig);
 		this->addRegion(region);

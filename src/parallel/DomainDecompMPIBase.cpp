@@ -58,9 +58,6 @@ DomainDecompMPIBase::~DomainDecompMPIBase() {
 }
 
 void DomainDecompMPIBase::readXML(XMLfileUnits& xmlconfig) {
-	// store current path
-	std::string oldPath(xmlconfig.getcurrentnodepath());
-
 #ifndef MARDYN_AUTOPAS
 	std::string neighbourCommunicationScheme = "indirect";
 	xmlconfig.getNodeValue("CommunicationScheme", neighbourCommunicationScheme);
@@ -77,8 +74,10 @@ void DomainDecompMPIBase::readXML(XMLfileUnits& xmlconfig) {
 	std::string zonalMethod = "fs";
 	std::string traversal = "c08"; // currently useless, as traversal is set elsewhere
 
-	xmlconfig.changecurrentnode("../datastructure");
-	xmlconfig.getNodeValue("traversalSelector", traversal);
+	{
+		auto datastructureNode = xmlconfig.scopedChangeCurrentNode("../datastructure");
+		xmlconfig.getNodeValue("traversalSelector", traversal);
+	}
 	transform(traversal.begin(),
 	          traversal.end(),
 	          traversal.begin(),
@@ -98,8 +97,6 @@ void DomainDecompMPIBase::readXML(XMLfileUnits& xmlconfig) {
 
 
 	Log::global_log->info() << "variable zonalMethod is: " << zonalMethod << std::endl;
-	// reset path
-	xmlconfig.changecurrentnode(oldPath);
 
 	// Specifies if the sequential fallback shall be used.
 	bool useSequentialFallback = true;

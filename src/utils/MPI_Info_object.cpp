@@ -22,16 +22,14 @@ void MPI_Info_object::readXML(XMLfile& xmlconfig) {
 	XMLfile::Query query = xmlconfig.query("hint");
 	Log::global_log->debug() << "[MPI_Info_object]\tNumber of hint key value pairs: " << query.card() << std::endl;
 
-	std::string oldpath = xmlconfig.getcurrentnodepath();
 	for(auto pairIter = query.begin(); pairIter; ++pairIter) {
-		xmlconfig.changecurrentnode(pairIter);
+		auto hintNode = xmlconfig.scopedChangeCurrentNode(pairIter);
 		std::string key, value;
 		xmlconfig.getNodeValue("key", key);
 		xmlconfig.getNodeValue("value", value);
 		Log::global_log->debug() << "[MPI_Info_object]\treadXML: found MPI Info hint '" << key << "': " << value << std::endl;
 		add_hint(key, value);
 	}
-	xmlconfig.changecurrentnode(oldpath);
 }
 
 void MPI_Info_object::add_hint(std::string& key, std::string& value) {

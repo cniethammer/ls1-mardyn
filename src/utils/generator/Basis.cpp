@@ -21,10 +21,9 @@
 void Basis::readXML(XMLfileUnits& xmlconfig) {
 	XMLfile::Query query = xmlconfig.query("site");
 	Ensemble* ensemble = _simulation.getEnsemble();
-	std::string oldpath = xmlconfig.getcurrentnodepath();
 	for(auto siteIter = query.begin(); siteIter; siteIter++) {
 		Molecule molecule;
-		xmlconfig.changecurrentnode(siteIter);
+		auto siteNode = xmlconfig.scopedChangeCurrentNode(siteIter);
 		int componentid = -1;
 		std::string componentname = "";
 		if(1 == xmlconfig.getNodeValue("componentname", componentname)) {
@@ -48,7 +47,6 @@ void Basis::readXML(XMLfileUnits& xmlconfig) {
 		Log::global_log->info() << "[Basis] Adding molecule " << molecule.component()->getName() << " (cid=" << molecule.componentid() << "), (x,y,z)=(" << molecule.r(0) << "," << molecule.r(1) << "," << molecule.r(2) << ")" << std::endl;
 		addMolecule(molecule);
 	}
-	xmlconfig.changecurrentnode(oldpath);
 }
 
 void Basis::addMolecule(const Molecule& molecule) {

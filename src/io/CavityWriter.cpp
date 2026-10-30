@@ -87,24 +87,18 @@ void CavityWriter::readXML(XMLfileUnits &xmlconfig) {
     }
 
     // Get components to check
-    // get root
-    std::string oldpath = xmlconfig.getcurrentnodepath();
-
     this->_mcav = std::map<unsigned, CavityEnsemble *>();
 
     // iterate over all components
     XMLfile::Query query = xmlconfig.query("componentid");
     for (auto pluginIter = query.begin(); pluginIter; ++pluginIter) {
-        xmlconfig.changecurrentnode(pluginIter);
+        auto componentNode = xmlconfig.scopedChangeCurrentNode(pluginIter);
         int componentID = -1;
         xmlconfig.getNodeValue(xmlconfig.getcurrentnodepath(), componentID);
         Log::global_log->info() << "[CavityWriter] Component: " << componentID << std::endl;
         CavityEnsemble *cav = new CavityEnsemble();
         _mcav[componentID] = cav;
     }
-
-    // go back to root
-    xmlconfig.changecurrentnode(oldpath);
 }
 
 void CavityWriter::init(ParticleContainer *particleContainer, DomainDecompBase *domainDecomp,

@@ -41,7 +41,7 @@ void Component::readXML(XMLfileUnits& xmlconfig) {
 	XMLfile::Query query = xmlconfig.query( "site" );
 	XMLfile::Query::const_iterator siteIter;
 	for( siteIter = query.begin(); siteIter; siteIter++ ) {
-		xmlconfig.changecurrentnode(siteIter);
+		auto siteNode = xmlconfig.scopedChangeCurrentNode(siteIter);
 
 		std::string siteType;
 		xmlconfig.getNodeValue("@type", siteType);
@@ -84,17 +84,14 @@ void Component::readXML(XMLfileUnits& xmlconfig) {
 			error_message << "Unknown site type:" << siteType << std::endl;
 			MARDYN_EXIT(error_message.str());
 		}
-		// go back to initial level, to be consistent, even if no site information is found.
-		xmlconfig.changecurrentnode("..");
 	}
 
-	if(xmlconfig.changecurrentnode("momentsofinertia")){
+	if(auto inertiaNode = xmlconfig.scopedChangeCurrentNode("momentsofinertia")){
 		double II[3];
 		if(xmlconfig.getNodeValueReduced("Ixx", II[0]) > 0) { setI11(II[0]); }
 		if(xmlconfig.getNodeValueReduced("Iyy", II[1]) > 0) { setI22(II[1]); }
 		if(xmlconfig.getNodeValueReduced("Izz", II[2]) > 0) { setI33(II[2]); }
 		Log::global_log->info() << "Using moments of inertia set in xml config: Ixx = " << I11() << " ; Iyy = " << I22() << " ; Izz = " << I33() << std::endl;
-		xmlconfig.changecurrentnode("..");
 	} else {
 		Log::global_log->info() << "Using calculated moments of inertia: Ixx = " << I11() << " ; Iyy = " << I22() << " ; Izz = " << I33() << std::endl;
 	}

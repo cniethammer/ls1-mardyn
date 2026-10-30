@@ -238,8 +238,7 @@ void ReplicaGenerator::readXML(XMLfileUnits& xmlconfig) {
 	// change identity of molecules by component ID (zero based))
 	{
 		// vapor system
-		std::string oldpath = xmlconfig.getcurrentnodepath();
-		if(xmlconfig.changecurrentnode("componentIDs/vapor")) {
+		if(auto vaporNode = xmlconfig.scopedChangeCurrentNode("componentIDs/vapor")) {
 			uint8_t numChanges = 0;
 			XMLfile::Query query = xmlconfig.query("change");
 			numChanges = query.card();
@@ -251,7 +250,7 @@ void ReplicaGenerator::readXML(XMLfileUnits& xmlconfig) {
 			}
 			XMLfile::Query::const_iterator changeIter;
 			for(changeIter = query.begin(); changeIter; changeIter++) {
-				xmlconfig.changecurrentnode(changeIter);
+				auto changeNode = xmlconfig.scopedChangeCurrentNode(changeIter);
 				uint32_t nFrom, nTo;
 				nFrom = nTo = 1;
 				xmlconfig.getNodeValue("from", nFrom);
@@ -259,11 +258,9 @@ void ReplicaGenerator::readXML(XMLfileUnits& xmlconfig) {
 				_vecChangeCompIDsVap.at(nFrom - 1) = nTo - 1;
 			}
 		}
-		xmlconfig.changecurrentnode(oldpath);
 
 		// liquid system
-		oldpath = xmlconfig.getcurrentnodepath();
-		if(xmlconfig.changecurrentnode("componentIDs/liquid")) {
+		if(auto liquidNode = xmlconfig.scopedChangeCurrentNode("componentIDs/liquid")) {
 			uint8_t numChanges = 0;
 			XMLfile::Query query = xmlconfig.query("change");
 			numChanges = query.card();
@@ -275,7 +272,7 @@ void ReplicaGenerator::readXML(XMLfileUnits& xmlconfig) {
 			}
 			XMLfile::Query::const_iterator changeIter;
 			for(changeIter = query.begin(); changeIter; changeIter++) {
-				xmlconfig.changecurrentnode(changeIter);
+				auto changeNode = xmlconfig.scopedChangeCurrentNode(changeIter);
 				uint32_t nFrom, nTo;
 				nFrom = nTo = 1;
 				xmlconfig.getNodeValue("from", nFrom);
@@ -283,7 +280,6 @@ void ReplicaGenerator::readXML(XMLfileUnits& xmlconfig) {
 				_vecChangeCompIDsLiq.at(nFrom - 1) = nTo - 1;
 			}
 		}
-		xmlconfig.changecurrentnode(oldpath);
 	}
 
 	this->init();

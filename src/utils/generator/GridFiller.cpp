@@ -88,13 +88,11 @@ void GridFiller::init() {
 
 void GridFiller::readXML(XMLfileUnits& xmlconfig) {
 	using std::endl;
-	if(xmlconfig.changecurrentnode("lattice")) {
+	if(auto latticeNode = xmlconfig.scopedChangeCurrentNode("lattice")) {
 		_lattice.readXML(xmlconfig);
-		xmlconfig.changecurrentnode("..");
 	}
-	if(xmlconfig.changecurrentnode("basis")) {
+	if(auto basisNode = xmlconfig.scopedChangeCurrentNode("basis")) {
 		_basis.readXML(xmlconfig);
-		xmlconfig.changecurrentnode("..");
 	}
 	xmlconfig.getNodeValue("latticeOccupancy", _latticeOccupancy);
 	Log::global_log->info() << "Lattice occupancy: " << _latticeOccupancy << std::endl;

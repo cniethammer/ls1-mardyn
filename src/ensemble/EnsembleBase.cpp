@@ -29,16 +29,14 @@ void Ensemble::readXML(XMLfileUnits& xmlconfig) {
 	}
 	_components.resize(numComponents);
 	XMLfile::Query::const_iterator componentIter;
-	std::string oldpath = xmlconfig.getcurrentnodepath();
 	for(componentIter = query.begin(); componentIter; componentIter++) {
-		xmlconfig.changecurrentnode(componentIter);
+		auto componentNode = xmlconfig.scopedChangeCurrentNode(componentIter);
 		unsigned int cid = 0;
 		xmlconfig.getNodeValue("@id", cid);
 		_components[cid - 1].readXML(xmlconfig);
 		_componentnamesToIds[_components[cid - 1].getName()] = cid - 1;
 		Log::global_log->debug() << _components[cid - 1].getName() << " --> " << cid - 1 << std::endl;
 	}
-	xmlconfig.changecurrentnode(oldpath);
 
 	/* mixing rules */
 	query = xmlconfig.query("components/mixing/rule");
@@ -48,7 +46,7 @@ void Ensemble::readXML(XMLfileUnits& xmlconfig) {
 	Log::global_log->info() << "Found " << numMixingrules << " mixing rules." << std::endl;
 
 	for(mixingruletIter = query.begin(); mixingruletIter; mixingruletIter++) {
-		xmlconfig.changecurrentnode(mixingruletIter);
+		auto mixingruleNode = xmlconfig.scopedChangeCurrentNode(mixingruletIter);
 		std::shared_ptr<MixingRuleBase> mixingrule;
 		std::string mixingruletype;
 
@@ -91,7 +89,6 @@ void Ensemble::readXML(XMLfileUnits& xmlconfig) {
 			}
 		}
 	}
-	xmlconfig.changecurrentnode(oldpath);
 	setComponentLookUpIDs();
 }
 

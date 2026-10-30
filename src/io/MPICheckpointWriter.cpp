@@ -77,14 +77,13 @@ void MPICheckpointWriter::readXML(XMLfileUnits& xmlconfig)
 		Log::global_log->info() << "[MPICheckpointWriter] execution wall time will be measured" << std::endl;
 	}
 
-	if(xmlconfig.changecurrentnode("mpi_info")) {
+	if(auto mpiInfoNode = xmlconfig.scopedChangeCurrentNode("mpi_info")) {
 #ifdef ENABLE_MPI
 		Log::global_log->info() << "[MPICheckpointWriter] Setting MPI info object for IO" << std::endl;
 		_mpiinfo.readXML(xmlconfig);
 #else
 		Log::global_log->info() << "[MPICheckpointWriter] mpi_info only used in parallel/MPI version" << std::endl;
 #endif
-		xmlconfig.changecurrentnode("..");
 	}
 
 	_particlesbuffersize = 0;

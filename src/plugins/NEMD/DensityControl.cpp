@@ -116,10 +116,9 @@ void DensityControl::readXML(XMLfileUnits& xmlconfig) {
 		error_message << "[DensityControl] No target parameters specified. Program exit ..." << std::endl;
 		MARDYN_EXIT(error_message.str());
 	}
-	const std::string oldpath = xmlconfig.getcurrentnodepath();
 	XMLfile::Query::const_iterator nodeIter;
 	for (nodeIter = query.begin(); nodeIter; nodeIter++) {
-		xmlconfig.changecurrentnode(nodeIter);
+		auto targetNode = xmlconfig.scopedChangeCurrentNode(nodeIter);
 		uint32_t cid_ub;
 		xmlconfig.getNodeValue("@cid", cid_ub);
 		double density = 0.;
@@ -129,7 +128,6 @@ void DensityControl::readXML(XMLfileUnits& xmlconfig) {
 		_densityTarget.count[cid_ub] = count;
 		_densityTarget.specified.at(cid_ub) = true;
 	}  // loop over 'targets/target' nodes
-	xmlconfig.changecurrentnode(oldpath);
 }
 
 void DensityControl::beforeForces(ParticleContainer* particleContainer, DomainDecompBase* domainDecomp,

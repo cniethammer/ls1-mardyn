@@ -17,10 +17,9 @@ void SysMonOutput::readXML(XMLfileUnits& xmlconfig) {
 	Log::global_log->info() << "Write frequency: " << _writeFrequency << std::endl;
 	SysMon* sysmon = SysMon::getSysMon();
 	XMLfile::Query query = xmlconfig.query("expression");
-	//string oldpath = xmlconfig.getcurrentnodepath();
 	for(XMLfile::Query::const_iterator exprIter = query.begin(); exprIter; exprIter++ )
 	{
-		xmlconfig.changecurrentnode(exprIter);
+		auto exprNode = xmlconfig.scopedChangeCurrentNode(exprIter);
 		std::string expr(xmlconfig.getNodeValue_string("."));
 		std::string label(xmlconfig.getNodeValue_string(std::string("@label")));
 		if(label.empty())
@@ -30,7 +29,6 @@ void SysMonOutput::readXML(XMLfileUnits& xmlconfig) {
 			sysmon->addExpression(expr,label);
 		}
 	}
-	//xmlconfig.changecurrentnode(oldpath);
 
 	//sysmon->updateExpressionValues();
 	//global_log->info() << sysmon->InfoString("System Monitor\n","\t");

@@ -173,7 +173,6 @@ void TraversalTuner<CellTemplate>::findOptimalTraversal() {
 
 template<class CellTemplate>
 void TraversalTuner<CellTemplate>::readXML(XMLfileUnits &xmlconfig) {
-	std::string oldPath(xmlconfig.getcurrentnodepath());
 	// read traversal type default values
 	std::string traversalType;
 
@@ -209,18 +208,9 @@ void TraversalTuner<CellTemplate>::readXML(XMLfileUnits &xmlconfig) {
 
 	_cellsInCutoff = xmlconfig.getNodeValue_int("cellsInCutoffRadius", 1); // This is currently only used for an assert
 
-	// workaround for stupid iterator:
-	// since
-	// xmlconfig.changecurrentnode(traversalIterator);
-	// does not work resolve paths to traversals manually
-	// use iterator only to resolve number of traversals (==iterations)
-	std::string basePath(xmlconfig.getcurrentnodepath());
-
-	int i = 1;
 	XMLfile::Query qry = xmlconfig.query("traversalData");
 	for (XMLfile::Query::const_iterator traversalIterator = qry.begin(); traversalIterator; ++traversalIterator) {
-		std::string path(basePath + "/traversalData[" + std::to_string(i) + "]");
-		xmlconfig.changecurrentnode(path);
+		auto traversalNode = xmlconfig.scopedChangeCurrentNode(traversalIterator);
 
 		traversalType = xmlconfig.getNodeValue_string("@type", "NOTHING FOUND");
 		transform(traversalType.begin(), traversalType.end(), traversalType.begin(), ::tolower);
@@ -262,9 +252,7 @@ void TraversalTuner<CellTemplate>::readXML(XMLfileUnits &xmlconfig) {
 		} else {
 			Log::global_log->warning() << "Unknown traversal type: " << traversalType << std::endl;
 		}
-		++i;
 	}
-	xmlconfig.changecurrentnode(oldPath);
 }
 
 template<class CellTemplate>

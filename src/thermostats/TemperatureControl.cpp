@@ -623,10 +623,9 @@ void TemperatureControl::readXML(XMLfileUnits& xmlconfig) {
 	if (numRegions < 1) {
 		Log::global_log->warning() << "No region parameters specified." << std::endl;
 	}
-	std::string oldpath = xmlconfig.getcurrentnodepath();
 	XMLfile::Query::const_iterator outputRegionIter;
 	for (outputRegionIter = query.begin(); outputRegionIter; outputRegionIter++) {
-		xmlconfig.changecurrentnode(outputRegionIter);
+		auto regionNode = xmlconfig.scopedChangeCurrentNode(outputRegionIter);
 		ControlRegionT* region = new ControlRegionT(this);
 		region->readXML(xmlconfig);
 		this->AddRegion(region);

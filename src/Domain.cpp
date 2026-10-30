@@ -81,7 +81,7 @@ Domain::Domain(int rank) {
 
 void Domain::readXML(XMLfileUnits& xmlconfig) {
 	/* volume */
-	if ( xmlconfig.changecurrentnode( "volume" )) {
+	if (auto volumeNode = xmlconfig.scopedChangeCurrentNode("volume")) {
 		std::string type;
 		xmlconfig.getNodeValue( "@type", type );
 		Log::global_log->info() << "Volume type: " << type << std::endl;
@@ -98,7 +98,6 @@ void Domain::readXML(XMLfileUnits& xmlconfig) {
 			error_message << "Unsupported volume type " << type << std::endl;
 			MARDYN_EXIT(error_message.str());
 		}
-		xmlconfig.changecurrentnode("..");
 	}
 
 	/* temperature */

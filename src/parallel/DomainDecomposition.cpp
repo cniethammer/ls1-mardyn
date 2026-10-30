@@ -116,11 +116,10 @@ void DomainDecomposition::balanceAndExchange(double /*lastTraversalTime*/, bool 
 void DomainDecomposition::readXML(XMLfileUnits& xmlconfig) {
 	DomainDecompMPIBase::readXML(xmlconfig);
 
-	if(xmlconfig.changecurrentnode("MPIGridDims")) {
+	if(auto gridDimsNode = xmlconfig.scopedChangeCurrentNode("MPIGridDims")) {
 		_gridSize[0] = xmlconfig.getNodeValue_int("x", 0);
 		_gridSize[1] = xmlconfig.getNodeValue_int("y", 0);
 		_gridSize[2] = xmlconfig.getNodeValue_int("z", 0);
-		xmlconfig.changecurrentnode("..");
 		initMPIGridDims();
 	}
 }

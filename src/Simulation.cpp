@@ -159,13 +159,12 @@ Simulation::~Simulation() {
 
 void Simulation::readXML(XMLfileUnits& xmlconfig) {
 	/* timers */
-	if(xmlconfig.changecurrentnode("programtimers")) {
+	if(auto programtimersNode = xmlconfig.scopedChangeCurrentNode("programtimers")) {
 		_timerProfiler.readXML(xmlconfig);
-		xmlconfig.changecurrentnode("..");
 	}
 
 	/* integrator */
-	if(xmlconfig.changecurrentnode("integrator")) {
+	if(auto integratorNode = xmlconfig.scopedChangeCurrentNode("integrator")) {
 		std::string integratorType;
 		xmlconfig.getNodeValue("@type", integratorType);
 		Log::global_log->info() << "Integrator type: " << integratorType << std::endl;
@@ -185,7 +184,6 @@ void Simulation::readXML(XMLfileUnits& xmlconfig) {
 		}
 		_integrator->readXML(xmlconfig);
 		_integrator->init();
-		xmlconfig.changecurrentnode("..");
 	} else {
 		std::ostringstream error_message;
 		error_message << "Integrator section missing." << std::endl;
@@ -193,7 +191,7 @@ void Simulation::readXML(XMLfileUnits& xmlconfig) {
 	}
 
 	/* run section */
-	if(xmlconfig.changecurrentnode("run")) {
+	if(auto runNode = xmlconfig.scopedChangeCurrentNode("run")) {
 		xmlconfig.getNodeValueReduced("currenttime", _simulationTime);
 		Log::global_log->info() << "Simulation start time (might be altered by checkpoint): "
 								<< getSimulationTime() << std::endl;
@@ -207,7 +205,6 @@ void Simulation::readXML(XMLfileUnits& xmlconfig) {
 			Log::global_log->info() << "Max loop-abort-time set: " << _maxWallTime << std::endl;
 			_wallTimeEnabled = true;
 		}
-		xmlconfig.changecurrentnode("..");
 	} else {
 		std::ostringstream error_message;
 		error_message << "Run section missing." << std::endl;
@@ -215,7 +212,7 @@ void Simulation::readXML(XMLfileUnits& xmlconfig) {
 	}
 
 	/* ensemble */
-	if(xmlconfig.changecurrentnode("ensemble")) {
+	if(auto ensembleNode = xmlconfig.scopedChangeCurrentNode("ensemble")) {
 		std::string ensembletype;
 		xmlconfig.getNodeValue("@type", ensembletype);
 		Log::global_log->info() << "Ensemble: " << ensembletype<< std::endl;
@@ -237,8 +234,6 @@ void Simulation::readXML(XMLfileUnits& xmlconfig) {
 			_domain->setGlobalLength(d, _ensemble->domain()->length(d));
 		}
 		_domain->setGlobalTemperature(_ensemble->T());
-
-		xmlconfig.changecurrentnode("..");
 	}
 	else {
 		std::ostringstream error_message;
@@ -247,9 +242,9 @@ void Simulation::readXML(XMLfileUnits& xmlconfig) {
 	}
 
 	/* algorithm */
-	if(xmlconfig.changecurrentnode("algorithm")) {
+	if(auto algorithmNode = xmlconfig.scopedChangeCurrentNode("algorithm")) {
 		/* cutoffs */
-		if(xmlconfig.changecurrentnode("cutoffs")) {
+		if(auto cutoffsNode = xmlconfig.scopedChangeCurrentNode("cutoffs")) {
 			if(xmlconfig.getNodeValueReduced("defaultCutoff", _cutoffRadius)) {
 				Log::global_log->info() << "dimensionless default cutoff radius:\t" << _cutoffRadius << std::endl;
 			}
@@ -268,7 +263,6 @@ void Simulation::readXML(XMLfileUnits& xmlconfig) {
 				MARDYN_EXIT(error_message.str());
 			}
 			Log::global_log->info() << "dimensionless cutoff radius:\t" << _cutoffRadius << std::endl;
-			xmlconfig.changecurrentnode("..");
 		} else {
 			std::ostringstream error_message;
 			error_message << "Cutoff section missing." << std::endl;
@@ -277,19 +271,18 @@ void Simulation::readXML(XMLfileUnits& xmlconfig) {
 
 		/* electrostatics */
 		/** @todo This may be better go into a physical section for constants? */
-		if(xmlconfig.changecurrentnode("electrostatic[@type='ReactionField']")) {
+		if(auto reactionFieldNode = xmlconfig.scopedChangeCurrentNode("electrostatic[@type='ReactionField']")) {
 			double epsilonRF = 0;
 			xmlconfig.getNodeValueReduced("epsilon", epsilonRF);
 			Log::global_log->info() << "Epsilon Reaction Field: " << epsilonRF << std::endl;
 			_domain->setepsilonRF(epsilonRF);
-			xmlconfig.changecurrentnode("..");
 		} else {
 			std::ostringstream error_message;
 			error_message << "Electrostatics section for reaction field setup missing." << std::endl;
 			MARDYN_EXIT(error_message.str());
 		}
 
-		if (xmlconfig.changecurrentnode("electrostatic[@type='FastMultipoleMethod']")) {
+		if (auto fmmNode = xmlconfig.scopedChangeCurrentNode("electrostatic[@type='FastMultipoleMethod']")) {
 #ifdef MARDYN_AUTOPAS
 			std::ostringstream error_message;
 			error_message << "The fast multipole method is not compatible with AutoPas. "
@@ -298,11 +291,10 @@ void Simulation::readXML(XMLfileUnits& xmlconfig) {
 #endif
 			_FMM = new bhfmm::FastMultipoleMethod();
 			_FMM->readXML(xmlconfig);
-			xmlconfig.changecurrentnode("..");
 		}
 
 		/* parallelisation */
-		if(xmlconfig.changecurrentnode("parallelisation")) {
+		if(auto parallelisationNode = xmlconfig.scopedChangeCurrentNode("parallelisation")) {
 			std::string parallelisationtype("DomainDecomposition");
 			xmlconfig.getNodeValue("@type", parallelisationtype);
 			Log::global_log->info() << "Parallelisation type: " << parallelisationtype << std::endl;
@@ -341,8 +333,7 @@ void Simulation::readXML(XMLfileUnits& xmlconfig) {
 				bool forceLatchingToLinkedCellsGrid = false;
 				// We need the skin here (to specify the smallest possible partition), so we extract it from the AutoPas
 				// container's xml, because the ParticleContainer needs to be instantiated later. :/
-				xmlconfig.changecurrentnode("..");
-				if (xmlconfig.changecurrentnode("datastructure")) {
+				if (auto datastructureNode = xmlconfig.scopedChangeCurrentNode("../datastructure")) {
 					std::string datastructuretype;
 					xmlconfig.getNodeValue("@type", datastructuretype);
 					if (datastructuretype == "AutoPas" or datastructuretype == "AutoPasContainer") {
@@ -371,11 +362,6 @@ void Simulation::readXML(XMLfileUnits& xmlconfig) {
 				} else {
 					std::ostringstream error_message;
 					error_message << "Datastructure section missing" << std::endl;
-					MARDYN_EXIT(error_message.str());
-				}
-				if(not xmlconfig.changecurrentnode("../parallelisation")){
-					std::ostringstream error_message;
-					error_message << "Could not go back to parallelisation path. Aborting." << std::endl;
 					MARDYN_EXIT(error_message.str());
 				}
 				delete _domainDecomposition;
@@ -423,7 +409,7 @@ void Simulation::readXML(XMLfileUnits& xmlconfig) {
 			}
 			_lastTraversalTimeHistory.setCapacity(timerForLoadAveragingLength);
 
-			if(xmlconfig.changecurrentnode("boundaries")) {
+			if(auto boundariesNode = xmlconfig.scopedChangeCurrentNode("boundaries")) {
 				std::string xBoundaryFromConfig, yBoundaryFromConfig, zBoundaryFromConfig;
 				xmlconfig.getNodeValue("x", xBoundaryFromConfig);
 				xmlconfig.getNodeValue("y", yBoundaryFromConfig);
@@ -448,10 +434,7 @@ void Simulation::readXML(XMLfileUnits& xmlconfig) {
 					<< " z - " << BoundaryUtils::convertBoundaryToString(zBoundary) << std::endl;
 				// go over all local boundaries, determine which are global
 				_domainDecomposition->setBoundsAndGlobalBoundaries(_domain, _ensemble);
-				xmlconfig.changecurrentnode("..");
 			}
-
-			xmlconfig.changecurrentnode("..");
 		}
 		else {
 		#ifdef ENABLE_MPI
@@ -466,7 +449,7 @@ void Simulation::readXML(XMLfileUnits& xmlconfig) {
 		}
 
 		/* datastructure */
-		if(xmlconfig.changecurrentnode("datastructure")) {
+		if(auto datastructureNode = xmlconfig.scopedChangeCurrentNode("datastructure")) {
 			std::string datastructuretype;
 			xmlconfig.getNodeValue("@type", datastructuretype);
 			Log::global_log->info() << "Datastructure type: " << datastructuretype << std::endl;
@@ -510,7 +493,6 @@ void Simulation::readXML(XMLfileUnits& xmlconfig) {
 			_domainDecomposition->getBoundingBoxMinMax(_domain, bBoxMin, bBoxMax);
 			bool sendTogether = _moleculeContainer->rebuild(bBoxMin, bBoxMax);
 			_domainDecomposition->updateSendLeavingWithCopies(sendTogether);
-			xmlconfig.changecurrentnode("..");
 		} else {
 			std::ostringstream error_message;
 			error_message << "Datastructure section missing" << std::endl;
@@ -519,7 +501,7 @@ void Simulation::readXML(XMLfileUnits& xmlconfig) {
 
 		// TODO: move parts to readXML in TemperatureControl?
 		/* thermostats */
-		if(xmlconfig.changecurrentnode("thermostats")) {
+		if(auto thermostatsNode = xmlconfig.scopedChangeCurrentNode("thermostats")) {
 			long numThermostats = 0;
 			XMLfile::Query query = xmlconfig.query("thermostat");
 			numThermostats = query.card();
@@ -528,10 +510,9 @@ void Simulation::readXML(XMLfileUnits& xmlconfig) {
 				Log::global_log->info() << "Enabling component wise thermostat" << std::endl;
 				_velocityScalingThermostat.enableComponentwise();
 			}
-			std::string oldpath = xmlconfig.getcurrentnodepath();
 			XMLfile::Query::const_iterator thermostatIter;
 			for( thermostatIter = query.begin(); thermostatIter; thermostatIter++ ) {
-				xmlconfig.changecurrentnode( thermostatIter );
+				auto thermostatNode = xmlconfig.scopedChangeCurrentNode(thermostatIter);
 				std::string thermostattype;
 				xmlconfig.getNodeValue("@type", thermostattype);
 				if(thermostattype == "VelocityScaling") {
@@ -567,15 +548,13 @@ void Simulation::readXML(XMLfileUnits& xmlconfig) {
 					continue;
 				}
 			}
-			xmlconfig.changecurrentnode(oldpath);
-			xmlconfig.changecurrentnode("..");
 		}
 		else {
 			Log::global_log->warning() << "Thermostats section missing." << std::endl;
 		}
 
 		/* long range correction */
-		if(xmlconfig.changecurrentnode("longrange") )
+		if(auto longrangeNode = xmlconfig.scopedChangeCurrentNode("longrange"))
 		{
 			std::string type;
 			if( !xmlconfig.getNodeValue("@type", type) )
@@ -609,14 +588,12 @@ void Simulation::readXML(XMLfileUnits& xmlconfig) {
 				error_message << "LongRangeCorrection: Wrong type. Expected type == homogeneous|planar|none. Program exit ..." << std::endl;
 				MARDYN_EXIT(error_message.str());
 			}
-			xmlconfig.changecurrentnode("..");
 		} else {
 			delete _longRangeCorrection;
 			Log::global_log->info() << "Initializing default homogeneous LRC, as no LRC was defined." << std::endl;
 			_longRangeCorrection = new Homogeneous(_cutoffRadius, _LJCutoffRadius, _domain, _moleculeContainer, global_simulation);
 		}
 
-		xmlconfig.changecurrentnode(".."); /* algorithm section */
 	}
 	else {
 		std::ostringstream error_message;
@@ -647,9 +624,7 @@ void Simulation::readXML(XMLfileUnits& xmlconfig) {
 	Log::global_log -> info() << "Accessed callbacks." << std::endl;
 
 
-	std::string oldpath = xmlconfig.getcurrentnodepath();
-
-	if(xmlconfig.changecurrentnode("ensemble/phasespacepoint/file")) {
+	if(auto fileNode = xmlconfig.scopedChangeCurrentNode("ensemble/phasespacepoint/file")) {
 		Log::global_log->info() << "Reading phase space from file." << std::endl;
 		std::string pspfiletype;
 		xmlconfig.getNodeValue("@type", pspfiletype);
@@ -678,10 +653,8 @@ void Simulation::readXML(XMLfileUnits& xmlconfig) {
 			MARDYN_EXIT(error_message.str());
 		}
 	}
-	xmlconfig.changecurrentnode(oldpath);
 
-	oldpath = xmlconfig.getcurrentnodepath();
-	if(xmlconfig.changecurrentnode("ensemble/phasespacepoint/generator")) {
+	if(auto generatorNode = xmlconfig.scopedChangeCurrentNode("ensemble/phasespacepoint/generator")) {
 		std::string generatorName;
 		xmlconfig.getNodeValue("@name", generatorName);
 		Log::global_log->info() << "Initializing phase space using generator: " << generatorName << std::endl;
@@ -710,19 +683,14 @@ void Simulation::readXML(XMLfileUnits& xmlconfig) {
 		}
 		_inputReader->readXML(xmlconfig);
 	}
-	xmlconfig.changecurrentnode(oldpath);
 
-	oldpath = xmlconfig.getcurrentnodepath();
-
-	if(xmlconfig.changecurrentnode("ensemble/phasespacepoint")) {
+	if(auto phasespacepointNode = xmlconfig.scopedChangeCurrentNode("ensemble/phasespacepoint")) {
 		bool ignoreCheckpointTime = false;
 		if(xmlconfig.getNodeValue("ignoreCheckpointTime", ignoreCheckpointTime)) {
 			if(ignoreCheckpointTime)
 				setSimulationTime(0.0);
 		}
 	}
-
-	xmlconfig.changecurrentnode(oldpath);
 
 	// _simulationTime might be updated by readers -> also update _initSimulation
 	// In theory, the division of the physical time (_simulationTime) and the time step width,
@@ -765,9 +733,8 @@ void Simulation::initConfigXML(const std::string& inputfilename) {
 		inp.getNodeValue("@version", version);
 		Log::global_log->info() << "MarDyn XML config file version: " << version << std::endl;
 
-		if(inp.changecurrentnode("simulation")) {
+		if(auto simulationNode = inp.scopedChangeCurrentNode("simulation")) {
 			readXML(inp);
-			inp.changecurrentnode("..");
 		} // simulation-section
 		else {
 			std::ostringstream error_message;
@@ -1574,11 +1541,10 @@ void Simulation::refreshParticleIDs()
 }
 
 void Simulation::parseMiscOptions(XMLfileUnits& xmlconfig) {
-	const auto oldpath = xmlconfig.getcurrentnodepath();
 	const XMLfile::Query optionNodes = xmlconfig.query("/mardyn/simulation/options/option");
 	// parse everything in this path
 	for (auto optionIter = optionNodes.begin(); optionIter; optionIter++) {
-		xmlconfig.changecurrentnode(optionIter);
+		auto optionNode = xmlconfig.scopedChangeCurrentNode(optionIter);
 		std::string strOptionName;
 		xmlconfig.getNodeValue("@name", strOptionName);
 		xmlconfig.getNodeValue(".", _miscOptions[strOptionName]);
@@ -1588,5 +1554,4 @@ void Simulation::parseMiscOptions(XMLfileUnits& xmlconfig) {
 	for (const auto& [name, value] : _miscOptions) {
 		Log::global_log->info() << "  " << name << ": " << value << std::endl;
 	}
-	xmlconfig.changecurrentnode(oldpath);
 }

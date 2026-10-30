@@ -199,9 +199,10 @@ void CanonicalEnsemble::readXML(XMLfileUnits& xmlconfig) {
 		error_message << "Volume type not supported." << std::endl;
 		MARDYN_EXIT(error_message.str());
 	}
-	xmlconfig.changecurrentnode("domain");
-	_domain->readXML(xmlconfig);
-	xmlconfig.changecurrentnode("..");
+	{
+		auto domainNode = xmlconfig.scopedChangeCurrentNode("domain");
+		_domain->readXML(xmlconfig);
+	}
 	_V = _domain->V();
 	Log::global_log->info() << "Volume: " << _V << std::endl;
 	Log::global_log->warning() << "Box dimensions not set yet in domain class" << std::endl;

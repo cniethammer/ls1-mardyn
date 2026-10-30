@@ -142,7 +142,7 @@ void ReplicaFiller::setObject(std::shared_ptr<Object> object) { _object = object
 std::shared_ptr<Object> ReplicaFiller::getObject() { return _object; }
 
 void ReplicaFiller::readXML(XMLfileUnits& xmlconfig) {
-	if (xmlconfig.changecurrentnode("input")) {
+	if (auto inputNode = xmlconfig.scopedChangeCurrentNode("input")) {
 		std::string inputPluginName;
 		xmlconfig.getNodeValue("@type", inputPluginName);
 		if (inputPluginName != "BinaryReader") {
@@ -157,17 +157,15 @@ void ReplicaFiller::readXML(XMLfileUnits& xmlconfig) {
 			error_message << "[ReplicaFiller] Could not create input reader " << inputPluginName << std::endl;
 			MARDYN_EXIT(error_message.str());
 		}
-		xmlconfig.changecurrentnode("..");
 	} else {
 		std::ostringstream error_message;
 		error_message << "[ReplicaFiller] Input reader for original not specified." << std::endl;
 		MARDYN_EXIT(error_message.str());
 	}
-	if (xmlconfig.changecurrentnode("origin")) {
+	if (auto originNode = xmlconfig.scopedChangeCurrentNode("origin")) {
 		Coordinate3D origin;
 		origin.readXML(xmlconfig);
 		origin.get(_origin);
-		xmlconfig.changecurrentnode("..");
 	}
 	Log::global_log->info() << "[ReplicaFiller] Base point for the replication: ["
 					   << _origin[0] << "," << _origin[1] << "," << _origin[2]

@@ -25,9 +25,8 @@ void LoadbalanceWriter::readXML(XMLfileUnits& xmlconfig) {
 	Log::global_log->info() << "Output filename: " << _outputFilename << std::endl;
 
 	XMLfile::Query query = xmlconfig.query("timers/timer");
-	std::string oldpath = xmlconfig.getcurrentnodepath();
 	for(auto timerIter = query.begin(); timerIter; ++timerIter ) {
-		xmlconfig.changecurrentnode(timerIter);
+		auto timerNode = xmlconfig.scopedChangeCurrentNode(timerIter);
 		std::string timername;
 		xmlconfig.getNodeValue("name", timername);
 		if(timername != LB_WRITER_DEFAULT_TIMER_NAME) {
@@ -48,7 +47,6 @@ void LoadbalanceWriter::readXML(XMLfileUnits& xmlconfig) {
 				<< ", incremental: " << incrementalTimer << std::endl;
 
 	}
-	xmlconfig.changecurrentnode(oldpath);
 }
 
 void LoadbalanceWriter::init(ParticleContainer */*particleContainer*/,

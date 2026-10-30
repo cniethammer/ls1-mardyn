@@ -399,10 +399,8 @@ void MettDeamon::readXML(XMLfileUnits& xmlconfig)
 
 	// reservoir
 	{
-		std::string oldpath = xmlconfig.getcurrentnodepath();
-		xmlconfig.changecurrentnode("reservoir");
+		auto reservoirNode = xmlconfig.scopedChangeCurrentNode("reservoir");
 		_reservoir->readXML(xmlconfig);
-		xmlconfig.changecurrentnode(oldpath);
 	}
 
 	// restart
@@ -411,7 +409,7 @@ void MettDeamon::readXML(XMLfileUnits& xmlconfig)
 	_bIsRestart = _bIsRestart && xmlconfig.getNodeValue("restart/deltaY", _restartInfo.dYsum);
 
 	// change identity of fixed (frozen) molecules by component ID
-	if(xmlconfig.changecurrentnode("changes")) {
+	if(auto changesNode = xmlconfig.scopedChangeCurrentNode("changes")) {
 		uint8_t numChanges = 0;
 		XMLfile::Query query = xmlconfig.query("change");
 		numChanges = query.card();
@@ -421,10 +419,9 @@ void MettDeamon::readXML(XMLfileUnits& xmlconfig)
 			error_message << "[MettDeamon] No component change defined in XML-config file. Program exit ..." << std::endl;
 			MARDYN_EXIT(error_message.str());
 		}
-		std::string oldpath = xmlconfig.getcurrentnodepath();
 		XMLfile::Query::const_iterator changeIter;
 		for( changeIter = query.begin(); changeIter; changeIter++ ) {
-			xmlconfig.changecurrentnode(changeIter);
+			auto changeNode = xmlconfig.scopedChangeCurrentNode(changeIter);
 			uint32_t nFrom, nTo;
 			nFrom = nTo = 1;
 			xmlconfig.getNodeValue("from", nFrom);
@@ -432,8 +429,6 @@ void MettDeamon::readXML(XMLfileUnits& xmlconfig)
 			_vecChangeCompIDsFreeze.at(nFrom-1) = nTo-1;
 			_vecChangeCompIDsUnfreeze.at(nTo-1) = nFrom-1;
 		}
-		xmlconfig.changecurrentnode(oldpath);
-		xmlconfig.changecurrentnode("..");
 	}
 	else {
 		std::ostringstream error_message;
@@ -1325,7 +1320,7 @@ void Reservoir::readXML(XMLfileUnits& xmlconfig)
 	}
 
 	// Possibly change component IDs
-	if(xmlconfig.changecurrentnode("changes")) {
+	if(auto changesNode = xmlconfig.scopedChangeCurrentNode("changes")) {
 		uint8_t numChanges = 0;
 		XMLfile::Query query = xmlconfig.query("change");
 		numChanges = query.card();
@@ -1334,18 +1329,15 @@ void Reservoir::readXML(XMLfileUnits& xmlconfig)
 			error_message << "[MettDeamon] No component change defined in XML-config file. Program exit ..." << std::endl;
 			MARDYN_EXIT(error_message.str());
 		}
-		std::string oldpath = xmlconfig.getcurrentnodepath();
 		XMLfile::Query::const_iterator changeIter;
 		for( changeIter = query.begin(); changeIter; changeIter++ ) {
-			xmlconfig.changecurrentnode(changeIter);
+			auto changeNode = xmlconfig.scopedChangeCurrentNode(changeIter);
 			uint32_t nFrom, nTo;
 			nFrom = nTo = 1;
 			xmlconfig.getNodeValue("from", nFrom);
 			xmlconfig.getNodeValue("to", nTo);
 			_vecChangeCompIDs.at(nFrom-1) = nTo-1;
 		}
-		xmlconfig.changecurrentnode(oldpath);
-		xmlconfig.changecurrentnode("..");
 	}
 }
 

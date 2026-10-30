@@ -20,7 +20,7 @@
 
 
 void ObjectGenerator::readXML(XMLfileUnits& xmlconfig) {
-	if(xmlconfig.changecurrentnode("filler")) {
+	if(auto fillerNode = xmlconfig.scopedChangeCurrentNode("filler")) {
 		std::string fillerType;
 		xmlconfig.getNodeValue("@type", fillerType);
 		Log::global_log->debug() << "Filler type: " << fillerType << std::endl;
@@ -28,14 +28,13 @@ void ObjectGenerator::readXML(XMLfileUnits& xmlconfig) {
 		_filler = std::shared_ptr<ObjectFillerBase>(objectFillerFactory.create(fillerType));
 		Log::global_log->debug() << "Using object filler of type: " << _filler->getPluginName() << std::endl;
 		_filler->readXML(xmlconfig);
-		xmlconfig.changecurrentnode("..");
 	} else {
 		std::ostringstream error_message;
 		error_message << "No filler specified." << std::endl;
 		MARDYN_EXIT(error_message.str());
 	}
 
-	if(xmlconfig.changecurrentnode("object")) {
+	if(auto objectNode = xmlconfig.scopedChangeCurrentNode("object")) {
 		std::string objectType;
 		xmlconfig.getNodeValue("@type", objectType);
 		Log::global_log->debug() << "Obj name: " << objectType << std::endl;
@@ -43,14 +42,13 @@ void ObjectGenerator::readXML(XMLfileUnits& xmlconfig) {
 		_object = std::shared_ptr<Object>(objectFactory.create(objectType));
 		Log::global_log->debug() << "Created object of type: " << _object->getPluginName() << std::endl;
 		_object->readXML(xmlconfig);
-		xmlconfig.changecurrentnode("..");
 	} else {
 		std::ostringstream error_message;
 		error_message << "No object specified." << std::endl;
 		MARDYN_EXIT(error_message.str());
 	}
 
-	if(xmlconfig.changecurrentnode("velocityAssigner")) {
+	if(auto velocityAssignerNode = xmlconfig.scopedChangeCurrentNode("velocityAssigner")) {
 		std::string velocityAssignerName;
 		xmlconfig.getNodeValue("@type", velocityAssignerName);
 		Log::global_log->info() << "Velocity assigner: " << velocityAssignerName << std::endl;
@@ -83,7 +81,6 @@ void ObjectGenerator::readXML(XMLfileUnits& xmlconfig) {
 		Ensemble* ensemble = _simulation.getEnsemble();
 		Log::global_log->info() << "Setting temperature for velocity assigner to " << ensemble->T() << std::endl;
 		_velocityAssigner->setTemperature(ensemble->T());
-		xmlconfig.changecurrentnode("..");
 	} else {
 		Log::global_log->warning() << "No velocityAssigner specified.  Will not change velocities provided by filler."
 							  << std::endl;

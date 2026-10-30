@@ -150,7 +150,6 @@ void Adios2Writer::readXML(XMLfileUnits& xmlconfig) {
 	Log::global_log->info() << "[Adios2Writer] Number of files: " << _num_files << std::endl;
 
 
-	xmlconfig.changecurrentnode("/");
 	xmlconfig.printXML(_xmlstream);
 
 	if (!_inst) initAdios2();

@@ -49,7 +49,7 @@ void StaticIrregDomainDecomposition::readXML(XMLfileUnits &xmlconfig) {
   DomainDecompMPIBase::readXML(xmlconfig);
   // bypass DomainDecomposition readXML to avoid reading MPIGridDims
 
-  if (xmlconfig.changecurrentnode("subdomainWeights")) {
+  if (auto weightsNode = xmlconfig.scopedChangeCurrentNode("subdomainWeights")) {
     // If the node does not exist, then the behavior is identical to
     // DomainDecomposition unless the weights are set through the constructor.
     Log::global_log->debug()
@@ -103,7 +103,6 @@ void StaticIrregDomainDecomposition::readXML(XMLfileUnits &xmlconfig) {
     }
     initMPIGridDims();           // to recalculate _coords
     updateSubdomainDimensions(); // recalculate sizes from _coords
-    xmlconfig.changecurrentnode("..");
   }
 }
 

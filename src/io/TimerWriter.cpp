@@ -19,9 +19,8 @@ void TimerWriter::readXML(XMLfileUnits& xmlconfig) {
 	Log::global_log->info() << "Output prefix: " << _outputPrefix << std::endl;
 
 	XMLfile::Query query = xmlconfig.query("timers/timer");
-	std::string oldpath = xmlconfig.getcurrentnodepath();
 	for (auto timerIter = query.begin(); timerIter; ++timerIter) {
-		xmlconfig.changecurrentnode(timerIter);
+		auto timerNode = xmlconfig.scopedChangeCurrentNode(timerIter);
 		std::string timername;
 		xmlconfig.getNodeValue("name", timername);
 		_timerNames.push_back(timername);
@@ -38,7 +37,6 @@ void TimerWriter::readXML(XMLfileUnits& xmlconfig) {
 		error_message << "TimerWriter: no timers given. make sure you specify them correctly." << std::endl;
 		MARDYN_EXIT(error_message.str());
 	}
-	xmlconfig.changecurrentnode(oldpath);
 }
 
 void TimerWriter::init(ParticleContainer* /*particleContainer*/, DomainDecompBase* domainDecomp, Domain* /*domain*/) {

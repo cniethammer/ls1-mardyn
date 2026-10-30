@@ -165,19 +165,17 @@ ObjectUnification::ObjectUnification() : _ob1(nullptr), _ob2(nullptr) {}
 
 void ObjectUnification::readXML(XMLfileUnits& xmlconfig) {
 	ObjectFactory object_factory;
-	if(xmlconfig.changecurrentnode("object1")) {
+	if(auto objectNode = xmlconfig.scopedChangeCurrentNode("object1")) {
 		std::string object_type;
 		xmlconfig.getNodeValue("@type", object_type);
 		_ob1 = std::shared_ptr<Object>(object_factory.create(object_type));
 		_ob1->readXML(xmlconfig);
-		xmlconfig.changecurrentnode("..");
 	}
-	if(xmlconfig.changecurrentnode("object2")) {
+	if(auto objectNode = xmlconfig.scopedChangeCurrentNode("object2")) {
 		std::string object_type;
 		xmlconfig.getNodeValue("@type", object_type);
 		_ob2 = std::shared_ptr<Object>(object_factory.create(object_type));
 		_ob2->readXML(xmlconfig);
-		xmlconfig.changecurrentnode("..");
 	}
 }
 
@@ -186,19 +184,17 @@ ObjectSubtractor::ObjectSubtractor() : _ob1(nullptr), _ob2(nullptr) {}
 
 void ObjectSubtractor::readXML(XMLfileUnits& xmlconfig) {
 	ObjectFactory object_factory;
-	if(xmlconfig.changecurrentnode("object1")) {
+	if(auto objectNode = xmlconfig.scopedChangeCurrentNode("object1")) {
 		std::string object_type;
 		xmlconfig.getNodeValue("@type", object_type);
 		_ob1 = std::shared_ptr<Object>(object_factory.create(object_type));
 		_ob1->readXML(xmlconfig);
-		xmlconfig.changecurrentnode("..");
 	}
-	if(xmlconfig.changecurrentnode("object2")) {
+	if(auto objectNode = xmlconfig.scopedChangeCurrentNode("object2")) {
 		std::string object_type;
 		xmlconfig.getNodeValue("@type", object_type);
 		_ob2 = std::shared_ptr<Object>(object_factory.create(object_type));
 		_ob2->readXML(xmlconfig);
-		xmlconfig.changecurrentnode("..");
 	}
 }
 
@@ -207,19 +203,17 @@ ObjectIntersection::ObjectIntersection() : _ob1(nullptr), _ob2(nullptr) {}
 
 void ObjectIntersection::readXML(XMLfileUnits& xmlconfig) {
 	ObjectFactory object_factory;
-	if(xmlconfig.changecurrentnode("object1")) {
+	if(auto objectNode = xmlconfig.scopedChangeCurrentNode("object1")) {
 		std::string object_type;
 		xmlconfig.getNodeValue("@type", object_type);
 		_ob1 = std::shared_ptr<Object>(object_factory.create(object_type));
 		_ob1->readXML(xmlconfig);
-		xmlconfig.changecurrentnode("..");
 	}
-	if(xmlconfig.changecurrentnode("object2")) {
+	if(auto objectNode = xmlconfig.scopedChangeCurrentNode("object2")) {
 		std::string object_type;
 		xmlconfig.getNodeValue("@type", object_type);
 		_ob2 = std::shared_ptr<Object>(object_factory.create(object_type));
 		_ob2->readXML(xmlconfig);
-		xmlconfig.changecurrentnode("..");
 	}
 }
 
@@ -232,12 +226,11 @@ ObjectShifter::ObjectShifter() : _obj(nullptr) {
 
 void ObjectShifter::readXML(XMLfileUnits& xmlconfig) {
 	ObjectFactory object_factory;
-	if(xmlconfig.changecurrentnode("object")) {
+	if(auto objectNode = xmlconfig.scopedChangeCurrentNode("object")) {
 		std::string object_type;
 		xmlconfig.getNodeValue("@type", object_type);
 		_obj = std::shared_ptr<Object>(object_factory.create(object_type));
 		_obj->readXML(xmlconfig);
-		xmlconfig.changecurrentnode("..");
 	}
 	Coordinate3D shift(xmlconfig, "shift");
 	shift.get(_shift);

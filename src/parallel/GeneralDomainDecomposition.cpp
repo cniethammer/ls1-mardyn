@@ -316,7 +316,7 @@ void GeneralDomainDecomposition::readXML(XMLfileUnits& xmlconfig) {
 		}
 	}
 
-	if (xmlconfig.changecurrentnode("loadBalancer")) {
+	if (auto loadBalancerNode = xmlconfig.scopedChangeCurrentNode("loadBalancer")) {
 		std::string loadBalancerString = "None";
 		xmlconfig.getNodeValue("@type", loadBalancerString);
 		Log::global_log->info() << "Chosen Load Balancer: " << loadBalancerString << std::endl;
@@ -337,7 +337,6 @@ void GeneralDomainDecomposition::readXML(XMLfileUnits& xmlconfig) {
 		error_message << "loadBalancer section missing! Aborting!" << std::endl;
 		MARDYN_EXIT(error_message.str());
 	}
-	xmlconfig.changecurrentnode("..");
 }
 
 /**

@@ -1,10 +1,8 @@
 #include "Coordinate3D.h"
 
 Coordinate3D::Coordinate3D(XMLfileUnits& xmlconfig, std::string nodename) : _vec{0.0, 0.0, 0.0} {
-	std::string oldpath = xmlconfig.getcurrentnodepath();
-	xmlconfig.changecurrentnode(nodename);
+	auto node = xmlconfig.scopedChangeCurrentNode(nodename);
 	readXML(xmlconfig);
-	xmlconfig.changecurrentnode(oldpath);
 }
 
 
