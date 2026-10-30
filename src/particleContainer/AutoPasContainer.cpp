@@ -197,8 +197,6 @@ auto parseAutoPasOption(XMLfileUnits &xmlconfig, const std::string &xmlString,
 }
 
 void AutoPasContainer::readXML(XMLfileUnits &xmlconfig) {
-	std::string oldPath(xmlconfig.getcurrentnodepath());
-
 	// if any option is not specified in the XML use the autopas defaults
 	// get option values from xml
 	_traversalChoices = parseAutoPasOption<autopas::TraversalOption>(xmlconfig, "allowedTraversals", _traversalChoices);
@@ -288,8 +286,6 @@ void AutoPasContainer::readXML(XMLfileUnits &xmlconfig) {
 		// if this is not parsable it defaults to LogLevel::off
 		_logLevel = spdlog::level::from_str(logLevelStr);
 	}
-
-	xmlconfig.changecurrentnode(oldPath);
 }
 
 bool AutoPasContainer::rebuild(double *bBoxMin, double *bBoxMax) {
