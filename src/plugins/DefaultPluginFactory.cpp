@@ -1,4 +1,5 @@
 #include "DefaultPluginFactory.h"
+#include "plugins/RegisteredPlugins.h"  // generated, see cmake/plugins.cmake
 
 #include "utils/Logger.h"
 
@@ -31,7 +32,6 @@
 #include "plugins/DirectedPM.h"
 #include "plugins/Dropaccelerator.h"
 #include "plugins/Dropaligner.h"
-#include "plugins/ExamplePlugin.h"
 #include "plugins/FixRegion.h"
 #include "plugins/InMemoryCheckpointing.h"
 #include "plugins/LoadImbalanceThroughSleepPlugin.h"
@@ -69,6 +69,11 @@
 DefaultPluginFactory::DefaultPluginFactory() {
 	Log::global_log->debug() << "REGISTERING PLUGINS" << std::endl;
 
+	// plugins added with mardyn_add_plugin() in CMake
+	registerBuiltinPlugins(*this);
+
+	// plugins not yet moved to their own directories
+
 #ifdef ENABLE_ADIOS2
 	REGISTER_PLUGIN(Adios2Writer);
 #endif
@@ -81,7 +86,6 @@ DefaultPluginFactory::DefaultPluginFactory() {
 	REGISTER_PLUGIN(Dropaccelerator);
 	REGISTER_PLUGIN(Dropaligner);
 	REGISTER_PLUGIN(EnergyLogWriter);
-	REGISTER_PLUGIN(ExamplePlugin);
 	REGISTER_PLUGIN(FixRegion);
 	REGISTER_PLUGIN(FlopRateWriter);
 	REGISTER_PLUGIN(GammaWriter);

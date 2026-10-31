@@ -69,6 +69,9 @@ include(mamico)
 # ----- add adios2 dependency
 include(adios2)
 
+# ----- plugin infrastructure
+include(plugins)
+
 # add mardyn
 add_subdirectory(src)
 

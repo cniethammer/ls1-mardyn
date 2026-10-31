@@ -6,7 +6,6 @@ target_sources(MarDyn
         Dropaccelerator.cpp
         Dropaligner.cpp
         EnergyRAPL.cpp
-        ExamplePlugin.cpp
         FixRegion.cpp
         InMemoryCheckpointing.cpp
         LoadImbalanceThroughSleepPlugin.cpp
@@ -28,4 +27,7 @@ endif(ENABLE_UNIT_TESTS)
 
 add_subdirectory(NEMD)
 add_subdirectory(profiles)
+
+# self-contained plugins in subdirectories, see cmake/plugins.cmake
+mardyn_add_plugin_subdirectories()
 

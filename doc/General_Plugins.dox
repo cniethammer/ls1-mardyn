@@ -35,13 +35,78 @@ Writing a new Plugin
 When writing a new plugin, you please do the following:
 -# check the table of already existing plugins, to see whether some existin plugin already does what you need it to do, or can be meaningfully generalized to do what you need it to do (e.g. an existing plugin is collecting output along the X-dimension, and you need it to collect output along the Y-dimension, then it might be more meaningful to generalize the existing plugin, then to write a completely new one).
 -# implement a new class by deriving from PluginBase (lets call it NewPlugin)
--# write your code and place it in src/plugins/NewPlugin.h and src/plugins/NewPlugin.cpp (keep in mind the styleguide rules!)
--# add your code to the PluginFactory by adding the lines
-	- #include "plugins/NewPlugin.h"
-	- REGISTER_PLUGIN(NewPlugin);
+-# write your code and place it in its own directory src/plugins/NewPlugin/ as NewPlugin.h and NewPlugin.cpp (keep in mind the styleguide rules!). Include other headers relative to src/, e.g. `#include "plugins/PluginBase.h"`.
+-# add a CMakeLists.txt to the directory, which adds the plugin to the build (see \ref ls1PluginsCMake below):
+~~~{.cmake}
+mardyn_add_plugin(NewPlugin
+    SOURCES NewPlugin.cpp
+    HEADER  NewPlugin.h
+)
+~~~
+   The directory is picked up automatically and the plugin is registered without any further changes. src/plugins/ExamplePlugin/ can serve as a template.
 -# document your plugin in the summary \ref PluginsSummary, so that other users know that it is there and would not reimplement it
 -# write a UnitTest for it, so that other people changing base code or - potentially generalizing/optimizing/bugfixing your plugin - will know whether they have broken it.
 -# write some doxygen documentation.
+
+\anchor ls1PluginsCMake
+Plugins in the build system
+---------------------------
+
+The CMake functions for plugins are defined in cmake/plugins.cmake, where all arguments are documented in detail.
+
+### Adding a plugin
+
+`mardyn_add_plugin(<name> SOURCES ... HEADER ... [CLASSES ...] [REGISTRY ...] [REQUIRES ...] [LIBRARIES ...] [DEFAULT ON|OFF])`
+- builds the plugin as OBJECT library `mardyn_plugin_<name>` with the same build settings as the rest of ls1-mardyn (target `mardyn_settings`) and links it into MarDyn,
+- creates the CMake option `MARDYN_PLUGIN_<name>` to enable or disable the plugin individually,
+- registers the plugin classes (default: the class `<name>`; each class needs a static `createInstance()` method), so they can be used in the XML input.
+
+Use `REQUIRES` for plugins that depend on optional features. The option is then only available if the conditions are met, and forced OFF otherwise:
+~~~{.cmake}
+mardyn_add_plugin(VTKMoleculeWriter
+    SOURCES  VTKMoleculeWriter.cpp
+    HEADER   VTKMoleculeWriter.h
+    REQUIRES ENABLE_VTK
+)
+~~~
+
+### Finding plugin directories
+
+`mardyn_add_plugin_subdirectories()` adds all direct subdirectories of the current directory whose CMakeLists.txt calls `mardyn_add_plugin()` or `mardyn_add_plugin_subdirectories()`. It is called in src/plugins/, so a new plugin directory there is found without changing any other CMake file. Other subdirectories are left alone and have to be added with `add_subdirectory()`.
+
+### Registries
+
+Plugins are collected in named registries; the default registry is `plugins`, whose plugins can be used in the `<plugin>` and `<output><outputplugin>` sections of the XML input. For each registry, `mardyn_generate_plugin_registration()` generates a header and a source file with a function registering all enabled plugins of the registry with a PluginFactory:
+~~~{.cmake}
+mardyn_generate_plugin_registration(plugins
+    FUNCTION    registerBuiltinPlugins
+    BASE        PluginBase
+    BASE_HEADER plugins/PluginBase.h
+    OUTPUT      plugins/RegisteredPlugins
+)
+~~~
+Separate registries allow plugin types with a different base class. The registration has to be generated after all directories adding plugins to the registry; CMake reports an error if a plugin is added too late or a registry with plugins is never generated.
+
+### Nested plugins
+
+Each level of mardyn_add_plugin_subdirectories() only searches its direct subdirectories, so plugin directories can be nested:
+- Directories that only group plugins contain a CMakeLists.txt calling just `mardyn_add_plugin_subdirectories()`.
+- A plugin can have sub-plugins of its own. Its CMakeLists.txt adds the plugin, its subdirectories and, if the sub-plugins have their own base class, generates their registry:
+
+~~~
+src/io/CMakeLists.txt                → mardyn_add_plugin_subdirectories()
+src/io/connector/CMakeLists.txt      → mardyn_add_plugin(Connector ...)
+                                       mardyn_add_plugin_subdirectories()
+                                       mardyn_generate_plugin_registration(connectors ...)
+src/io/connector/tcp/CMakeLists.txt  → mardyn_add_plugin(TcpConnector ... REGISTRY connectors
+                                                         REQUIRES MARDYN_PLUGIN_Connector)
+src/io/connector/mpi/CMakeLists.txt  → mardyn_add_plugin(MpiConnector ... REGISTRY connectors
+                                                         REQUIRES MARDYN_PLUGIN_Connector)
+~~~
+
+Conventions for nested plugins:
+- Plugin names must be unique across all directories and registries, as they define the option `MARDYN_PLUGIN_<name>` (e.g. TcpConnector instead of tcp).
+- Sub-plugins which are only useful together with their parent plugin declare `REQUIRES MARDYN_PLUGIN_<parent>`, so they are disabled together with the parent. Otherwise they are still built if the parent is disabled.
 
 Background
 ----------

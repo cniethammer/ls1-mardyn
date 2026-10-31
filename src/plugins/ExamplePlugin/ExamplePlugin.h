@@ -1,14 +1,7 @@
-/*
- * ExamplePlugin.h
- *
- *  Created on: 4 Jun 2018
- *      Author: tchipevn
- */
+#ifndef SRC_PLUGINS_EXAMPLEPLUGIN_EXAMPLEPLUGIN_H_
+#define SRC_PLUGINS_EXAMPLEPLUGIN_EXAMPLEPLUGIN_H_
 
-#ifndef SRC_PLUGINS_EXAMPLEPLUGIN_H_
-#define SRC_PLUGINS_EXAMPLEPLUGIN_H_
-
-#include "PluginBase.h"
+#include "plugins/PluginBase.h"
 
 #include <string>
 
@@ -72,4 +65,4 @@ private:
 	WhereToDisplay _displaySelector;
 };
 
-#endif /* SRC_PLUGINS_EXAMPLEPLUGIN_H_ */
+#endif /* SRC_PLUGINS_EXAMPLEPLUGIN_EXAMPLEPLUGIN_H_ */

@@ -39,8 +39,8 @@ target_sources(MarDyn
 
 if(ENABLE_ADIOS2)
     target_sources(MarDyn PRIVATE Adios2Reader.cpp Adios2Writer.cpp)
-    target_link_libraries(MarDyn PRIVATE adios2::adios2)
-    target_compile_definitions(MarDyn PRIVATE ENABLE_ADIOS2)
+    target_link_libraries(mardyn_settings INTERFACE adios2::adios2)
+    target_compile_definitions(mardyn_settings INTERFACE ENABLE_ADIOS2)
 endif(ENABLE_ADIOS2)
 
 if(ENABLE_UNIT_TESTS)

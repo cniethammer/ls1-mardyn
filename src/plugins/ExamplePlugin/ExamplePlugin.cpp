@@ -1,10 +1,3 @@
-/*
- * ExamplePlugin.cpp
- *
- *  Created on: 4 Jun 2018
- *      Author: tchipevn
- */
-
 #include "ExamplePlugin.h"
 
 #include "utils/mardyn_assert.h"
