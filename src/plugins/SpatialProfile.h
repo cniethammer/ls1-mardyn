@@ -11,6 +11,7 @@
 
 #include <plugins/profiles/ProfileBase.h>
 #include "PluginBase.h"
+#include "PluginCallbacks.h"
 #include "Domain.h"
 #include "parallel/DomainDecompBase.h"
 #include "particleContainer/ParticleContainer.h"
@@ -70,7 +71,7 @@ class Virial2DProfile;
     </plugin>
 * \endcode
  */
-class SpatialProfile : public PluginBase {
+class SpatialProfile : public PluginBase, public PluginCallbacks {
 
 public:
 

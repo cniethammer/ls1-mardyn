@@ -43,6 +43,7 @@
 #include "integrators/LeapfrogRMM.h"
 
 #include "plugins/PluginBase.h"
+#include "plugins/PluginCallbacks.h"
 #include "plugins/DefaultPluginFactory.h"
 #include "plugins/PluginLoader.h"
 
@@ -611,15 +612,21 @@ void Simulation::readXML(XMLfileUnits& xmlconfig) {
 	numPlugs += loadPlugins(pluginFactory, xmlconfig, "output/outputplugin", _plugins);
 	Log::global_log -> info() << "Number of enabled Plugins: " << numPlugs << std::endl;
 
+	// exchange callbacks between plugins implementing the optional PluginCallbacks interface
+	std::map<std::string, FunctionWrapper> callbacks;
 	Log::global_log -> info() << "Registering callbacks." << std::endl;
 	for(auto&& plugin : _plugins) {
-		plugin->registerCallbacks(_callbacks);
+		if (auto callbackPlugin = dynamic_cast<PluginCallbacks*>(plugin)) {
+			callbackPlugin->registerCallbacks(callbacks);
+		}
 	}
-	Log::global_log -> info() << _callbacks.size() << " callbacks registered." << std::endl;
+	Log::global_log -> info() << callbacks.size() << " callbacks registered." << std::endl;
 
 	Log::global_log -> info() << "Accessing callbacks." << std::endl;
 	for(auto&& plugin : _plugins) {
-		plugin->accessAllCallbacks(_callbacks);
+		if (auto callbackPlugin = dynamic_cast<PluginCallbacks*>(plugin)) {
+			callbackPlugin->accessAllCallbacks(callbacks);
+		}
 	}
 	Log::global_log -> info() << "Accessed callbacks." << std::endl;
 

@@ -10,6 +10,7 @@
 // class DropalignerTest;
 #include "Domain.h"
 #include "PluginBase.h"
+#include "PluginCallbacks.h"
 #include "parallel/DomainDecompBase.h"
 #include "particleContainer/ParticleContainer.h"
 
@@ -32,7 +33,7 @@
 * \endcode
 */
 
-class FixRegion : public PluginBase {
+class FixRegion : public PluginBase, public PluginCallbacks {
 private:
 	double _xMin;
 	double _yMin;
