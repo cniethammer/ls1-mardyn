@@ -1,1 +1,1 @@
-TARGET_INCLUDE_DIRECTORIES(MarDyn SYSTEM PUBLIC ./)
+target_include_directories(mardyn_settings SYSTEM INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
