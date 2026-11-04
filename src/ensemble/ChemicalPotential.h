@@ -57,8 +57,6 @@ public:
 	unsigned long getGlobalN() { return _globalN; }
 	double getGlobalRho() { return (double)(_globalN) / _globalV; }
 
-	void outputIX() { std::cout << "  r" << _ownrank << "[IX" << _rnd.getIX() << "]  "; }
-
 	void assertSynchronization(DomainDecompBase* comm);
 
 	double getMu() { return _mu; }
