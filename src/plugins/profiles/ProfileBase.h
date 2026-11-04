@@ -5,6 +5,8 @@
 #ifndef MARDYN_TRUNK_PROFILEBASE_H
 #define MARDYN_TRUNK_PROFILEBASE_H
 
+#include <functional>
+
 #include "../../Domain.h"
 #include "../../parallel/DomainDecompBase.h"
 
@@ -17,7 +19,7 @@ struct SamplingInformation {
 	double segmentVolume; // Size of one Sampling grid bin
 	double universalCentre[3]; // Centre coords for cylinder system
 	unsigned long globalNumMolecules; // number of molecules in system
-	unsigned long numMolFixRegion; // number of molecules in Fix Region
+	std::function<unsigned long()> getNumMolFixRegion; 	// returns the current number of molecules in the region of the FixRegion plugin; empty if not used
 	bool cylinder; // Cartesian or Cylinder output
 };
 

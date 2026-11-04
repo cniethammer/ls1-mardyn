@@ -5,8 +5,6 @@
 #ifndef MARDYN_TRUNK_SPATIALPROFILE_H
 #define MARDYN_TRUNK_SPATIALPROFILE_H
 
-#include <functional>
-#include <optional>
 #include <vector>
 
 #include <plugins/profiles/ProfileBase.h>
@@ -96,13 +94,7 @@ public:
 
 	SamplingInformation samplInfo;
 
-	void accessAllCallbacks(const std::map<std::string, FunctionWrapper>& callbackMap) override {
-		// Accesses a callback registered by FixRegion. It returns the number of molecules in the fixregion.
-		std::string name{"FixRegion::getMoleculesInRegion"};
-		if(callbackMap.find(name) != callbackMap.end()) {
-			getNumFixRegion = callbackMap.at(name).get<unsigned long>();
-		}
-	}
+	void accessAllCallbacks(const std::map<std::string, FunctionWrapper>& callbackMap) override;
 
 private:
 
@@ -141,8 +133,6 @@ private:
 	bool _VIRIAL2D = false;
 
 	void addProfile(ProfileBase* profile);
-
-	std::optional<std::function<unsigned long(void)>> getNumFixRegion;
 
 };
 

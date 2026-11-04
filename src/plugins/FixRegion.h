@@ -42,7 +42,7 @@ private:
 	double _yMax;
 	double _zMax;
 	double _boxLength[3];
-	unsigned long _molCount;
+	unsigned long _molCount{0};
 
 public:
 	void init(ParticleContainer* particleContainer, DomainDecompBase* domainDecomp, Domain* domain) override;

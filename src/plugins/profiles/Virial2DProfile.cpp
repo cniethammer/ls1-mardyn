@@ -7,7 +7,6 @@
 #include "DensityProfile.h"
 #include "DOFProfile.h"
 #include "KineticProfile.h"
-#include "../FixRegion.h"
 #include "Simulation.h"
 
 void Virial2DProfile::output(std::string prefix, long unsigned accumulatedDatasets) {
@@ -41,7 +40,7 @@ void Virial2DProfile::writeDataEntry(unsigned long uID, std::ofstream &outfile) 
 	double globalTemperature = global_simulation->getDomain()->getCurrentTemperature(0);
 
 	//calculate global temperature if fixedRegion is applied
-	unsigned long numMolFixRegion = _samplInfo.numMolFixRegion;
+	const unsigned long numMolFixRegion = _samplInfo.getNumMolFixRegion ? _samplInfo.getNumMolFixRegion() : 0;
 	double globalTemperatureFixRegion = globalTemperature * _samplInfo.globalNumMolecules / (_samplInfo.globalNumMolecules - numMolFixRegion);
 
 	long double virial2Dx = 0.0;

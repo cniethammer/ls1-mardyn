@@ -13,12 +13,21 @@
 #include "plugins/profiles/VirialProfile.h"
 #include "plugins/profiles/Virial2DProfile.h"
 
+void SpatialProfile::accessAllCallbacks(const std::map<std::string, FunctionWrapper>& callbackMap) {
+	// FixRegion has not computed its molecule count yet, so only store the callback here.
+	if (auto getNumMolFixRegion = findCallback<unsigned long>(callbackMap, "FixRegion::getMoleculesInRegion")) {
+		samplInfo.getNumMolFixRegion = *getNumMolFixRegion;
+	} else {
+		Log::global_log->info() << "[SpatialProfile] No FixRegion callback found, assuming no fixed molecules."
+								<< std::endl;
+	}
+}
+
 /**
 * @brief Read in Information about write/record frequencies, Sampling Grid and which profiles are enabled.
  * Also create needed profiles and initialize them. New Profiles need to be handled via the XML here as well.
 * @param xmlconfig
 */
-
 void SpatialProfile::readXML(XMLfileUnits& xmlconfig) {
 	Log::global_log->debug() << "[SpatialProfile] enabled" << std::endl;
 	xmlconfig.getNodeValue("writefrequency", _writeFrequency);
@@ -152,13 +161,6 @@ void SpatialProfile::init(ParticleContainer* particleContainer, DomainDecompBase
 	}
 	// Get global number of molecules
 	samplInfo.globalNumMolecules = domain->getglobalNumMolecules(true, particleContainer, domainDecomp);
-	// Get number of molecules in FixRegion
-	if (getNumFixRegion) {
-		samplInfo.numMolFixRegion = (*getNumFixRegion)();
-	} else {
-		samplInfo.numMolFixRegion = 0;
-	}
-	Log::global_log->info() << "getDomain was called with Molecules in Fix Region: " << samplInfo.numMolFixRegion << std::endl;
 
 	// Calculate sampling units
 	if (samplInfo.cylinder) {
