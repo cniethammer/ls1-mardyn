@@ -13,13 +13,17 @@
 /** @brief Optional interface for plugins exchanging functions with other plugins.
  *
  * Plugins implementing this interface in addition to PluginBase can provide functions to other
- * plugins and use functions provided by them. After all plugins have been created, the simulation
- * first calls registerCallbacks() of all plugins implementing the interface, and then
- * accessAllCallbacks() of all of them. Therefore, a plugin can access callbacks of plugins listed
+ * plugins and use functions provided by them. After all plugins have been created from the input,
+ * the simulation first calls registerCallbacks() of all plugins implementing the interface, and then
+ * accessAllCallbacks() of all of them. Therefore, a plugin can get callbacks of plugins listed
  * after it in the input.
  *
- * Callbacks are identified by name, e.g. "<plugin name>::<function name>". The map only exists
- * while the callbacks are exchanged, so plugins have to store the callbacks they want to use.
+ * Callbacks are identified by name, following the pattern "<plugin name>::<function name>".
+ *
+ * Both functions are called before PluginBase::init() of any plugin, so the providing plugin may
+ * not be initialized yet. Call a callback at the earliest in a function called after all plugins
+ * have been initialized, e.g. PluginBase::endStep(), not in accessAllCallbacks() or
+ * PluginBase::init().
  */
 class PluginCallbacks {
 public:
@@ -45,20 +49,16 @@ public:
 	}
 
 	/**
-	 * Save callbacks from the callbackMap locally.
-	 * This allows a plugin to call functions from other plugins.
-	 * Example syntax:
-	 * - store a function that returns an unsigned long:
+	 * Get the callbacks of other plugins this plugin uses.
+	 * The map only exists during this call, so store the callbacks, e.g. as std::function members,
+	 * and call them later (see the class description). Use findCallback() for optional and
+	 * requireCallback() for required callbacks:
 	 * \code
-	 *   std::function<unsigned long(void)> myFunction;
-	 *   myFunction = callbackMap.at("getSomeLocalValue").get<unsigned long>();
+	 *   void MyPlugin::accessAllCallbacks(const std::map<std::string, FunctionWrapper>& callbackMap) {
+	 *       _doSth = requireCallback<void, int>(callbackMap, "OtherPlugin::doSth", getPluginName());
+	 *   }
 	 * \endcode
-	 * - store a function that calls some function of another plugin with an input value (int):
-	 * \code
-	 *   std::function<void(int)> myFunction;
-	 *   myFunction = callbackMap.at("doSth").get<void, int>();
-	 * \endcode
-	 * @param callbackMap Get callbacks from this map.
+	 * @param callbackMap Callbacks registered by all plugins.
 	 */
 	virtual void accessAllCallbacks(const std::map<std::string, FunctionWrapper>& callbackMap) {
 		// Empty by default.
@@ -66,11 +66,11 @@ public:
 
 protected:
 	/**
-	 * Get an optional callback, e.g. in accessAllCallbacks().
-	 * Example syntax:
+	 * Get an optional callback in accessAllCallbacks().
 	 * \code
-	 *   std::optional<std::function<unsigned long()>> getValue = findCallback<unsigned long>(callbackMap,
-	 * "Plugin::getValue"); if (getValue) { ... (*getValue)() ... }
+	 *   if (auto getValue = findCallback<unsigned long>(callbackMap, "OtherPlugin::getValue")) {
+	 *       _getValue = *getValue;
+	 *   }
 	 * \endcode
 	 * @tparam R     Return type of the callback.
 	 * @tparam Args  Argument types of the callback.
@@ -94,7 +94,7 @@ protected:
 	}
 
 	/**
-	 * Get a callback the plugin cannot work without, e.g. in accessAllCallbacks().
+	 * Get a callback the plugin cannot work without in accessAllCallbacks().
 	 * @tparam R     Return type of the callback.
 	 * @tparam Args  Argument types of the callback.
 	 * @param callbackMap       Map of all callbacks.
