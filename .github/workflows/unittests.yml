@@ -1,0 +1,60 @@
+name: "Unit tests"
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+  workflow_dispatch:
+
+# abort old runs of the same branch or PR if a new one is started
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  unit-tests:
+    name: Unit tests (MPI, ASan+UBSan)
+    runs-on: ubuntu-24.04
+
+    env:
+      # MPI libraries leak memory by design; keep ASan for memory errors only
+      ASAN_OPTIONS: detect_leaks=0
+      UBSAN_OPTIONS: print_stacktrace=1:halt_on_error=1
+      # Open MPI's memory patcher conflicts with ASan's malloc interception
+      # and crashes MPI_Init; ignored by MPICH
+      OMPI_MCA_memory: ^patcher
+      OMP_NUM_THREADS: 2
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v5
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends \
+          ninja-build \
+          libopenmpi-dev \
+          libcppunit-dev \
+          catch2 \
+          libxerces-c-dev \
+          libadios2-mpi-c++11-dev
+
+    - name: Build ls1
+      run: |
+        # Debian/Ubuntu installs the ADIOS2 CMake config in a subdirectory that find_package() does not search
+        cmake -S . -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=Debug \
+          -DCMAKE_CXX_FLAGS="-fsanitize=address,undefined -fno-omit-frame-pointer" \
+          -DCMAKE_EXE_LINKER_FLAGS="-fsanitize=address,undefined" \
+          -DENABLE_MPI=ON \
+          -DENABLE_OPENMP=ON \
+          -DENABLE_UNIT_TESTS=ON \
+          -DENABLE_VTK=ON \
+          -DENABLE_ADIOS2=ON \
+          -DADIOS2_DIR=/usr/lib/x86_64-linux-gnu/cmake/adios2/mpi
+        cmake --build build
+
+    - name: Run unit tests
+      run: ctest --test-dir build --output-on-failure
