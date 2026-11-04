@@ -1,39 +1,39 @@
 #ifndef RANDOM_H
 #define RANDOM_H
 
-// by Stefan Becker
-#include <cmath>
+#include <random>
 
-/** Uniform (quasi)-random number generator class.
+/** Uniform random number generator class.
  *
- * Minimal random number generator of Park and Miller combinmed with a Marsaglia shift sequence.
- * (see Numerical Recipies in Fortran 90: The Art of Parallel Scientific Computing, Chapter B7)
+ * Wraps the Mersenne Twister std::mt19937. The conversion of its output to floating point numbers is
+ * done here instead of using the distributions of the standard library, as these are implementation
+ * defined. Therefore, the generated numbers are the same for all compilers and standard libraries.
  */
 class Random {
 public:
 	Random(int seed = 8624);
+
+	/** Restart the random number sequence with the given seed. */
 	void init(int seed);
 
-	/** Produces a random number between zero and one. */
+	/** Produces a random number in the open interval (0, 1). */
 	float rnd();
 
 	/** get a uniformly distributed random number in [a,b] */
-	float uniformRandInRange(float a, float b) {
-		return a + rnd() * (b - a);
-	}
+	float uniformRandInRange(float a, float b) { return a + rnd() * (b - a); }
 
-	int getIX() {
-		return this->ix;
-	}
+	/** Returns a value identifying the current state, e.g. to check that generators on different
+	 * processes are in sync. Equal states give equal values; does not advance the sequence. */
+	int getIX() const;
 
-	// by Stefan Becker
 	/** returns a gaussian distributed deviate with zero mean and a standard deviation of stdDeviation
 	 the returned value is in the range +/- infinity (better: smallest, largest double number)*/
 	double gaussDeviate(double stdDeviation);
 
 private:
-	int ix, iy;
-	float am;
+	std::mt19937 _engine;
+	bool _hasSpareGauss{false};  //!< gaussDeviate() generates two deviates per call, the second one is stored
+	double _spareGauss{0.0};     //!< normal distributed deviate with standard deviation 1 for the next call
 };
 
 #endif
