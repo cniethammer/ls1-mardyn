@@ -2,7 +2,9 @@
 #define SRC_IO_GAMMAWRITER_H_
 
 #include "plugins/PluginBase.h"
+#include <array>
 #include <string>
+#include <vector>
 #include <fstream>
 
 class ParticleContainer;

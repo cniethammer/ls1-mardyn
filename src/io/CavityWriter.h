@@ -1,6 +1,7 @@
 #ifndef CAVITYWRITER_H_
 #define CAVITYWRITER_H_
 
+#include <map>
 #include <string>
 
 #include "plugins/PluginBase.h"

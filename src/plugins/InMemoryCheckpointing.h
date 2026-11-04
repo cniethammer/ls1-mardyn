@@ -11,6 +11,7 @@
 #include "PluginBase.h"
 #include "molecules/MoleculeForwardDeclaration.h"
 
+#include <array>
 #include <vector>
 
 class Snapshot;

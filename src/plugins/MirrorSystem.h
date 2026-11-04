@@ -5,6 +5,7 @@
 
 #include "PluginBase.h"
 
+#include <array>
 #include <string>
 #include <map>
 #include <list>

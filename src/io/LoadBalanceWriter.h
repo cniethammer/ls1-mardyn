@@ -4,6 +4,7 @@
 #include "plugins/PluginBase.h"
 #include "utils/Timer.h"
 
+#include <map>
 #include <string>
 #include <vector>
 #include <deque>
