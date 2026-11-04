@@ -1,8 +1,12 @@
 #ifndef SRC_PLUGINS_PLUGINCALLBACKS_H_
 #define SRC_PLUGINS_PLUGINCALLBACKS_H_
 
+#include <any>
+#include <functional>
 #include <map>
+#include <optional>
 #include <string>
+#include <typeinfo>
 
 #include "utils/FunctionWrapper.h"
 
@@ -59,6 +63,61 @@ public:
 	virtual void accessAllCallbacks(const std::map<std::string, FunctionWrapper>& callbackMap) {
 		// Empty by default.
 	}
+
+protected:
+	/**
+	 * Get an optional callback, e.g. in accessAllCallbacks().
+	 * Example syntax:
+	 * \code
+	 *   std::optional<std::function<unsigned long()>> getValue = findCallback<unsigned long>(callbackMap,
+	 * "Plugin::getValue"); if (getValue) { ... (*getValue)() ... }
+	 * \endcode
+	 * @tparam R     Return type of the callback.
+	 * @tparam Args  Argument types of the callback.
+	 * @param callbackMap  Map of all callbacks.
+	 * @param name         Name of the callback.
+	 * @return The callback, or std::nullopt if no callback with this name is registered.
+	 * @throws std::runtime_error if the callback is registered with a different signature.
+	 */
+	template <class R, class... Args>
+	static std::optional<std::function<R(Args...)>> findCallback(
+		const std::map<std::string, FunctionWrapper>& callbackMap, const std::string& name) {
+		const auto callback = callbackMap.find(name);
+		if (callback == callbackMap.end()) {
+			return std::nullopt;
+		}
+		try {
+			return callback->second.template get<R, Args...>();
+		} catch (const std::bad_any_cast&) {
+			throwSignatureMismatch(name, typeid(std::function<R(Args...)>), callback->second.type());
+		}
+	}
+
+	/**
+	 * Get a callback the plugin cannot work without, e.g. in accessAllCallbacks().
+	 * @tparam R     Return type of the callback.
+	 * @tparam Args  Argument types of the callback.
+	 * @param callbackMap       Map of all callbacks.
+	 * @param name              Name of the callback.
+	 * @param requestingPlugin  Name of the plugin requiring the callback, used in the error message.
+	 * @return The callback.
+	 * @throws std::runtime_error if no callback with this name is registered or it is registered with a
+	 *         different signature.
+	 */
+	template <class R, class... Args>
+	static std::function<R(Args...)> requireCallback(const std::map<std::string, FunctionWrapper>& callbackMap,
+	                                                 const std::string& name, const std::string& requestingPlugin) {
+		auto callback = findCallback<R, Args...>(callbackMap, name);
+		if (not callback) {
+			throwMissing(name, requestingPlugin);
+		}
+		return *callback;
+	}
+
+private:
+	[[noreturn]] static void throwSignatureMismatch(const std::string& name, const std::type_info& requested,
+	                                                const std::type_info& registered);
+	[[noreturn]] static void throwMissing(const std::string& name, const std::string& requestingPlugin);
 };
 
 #endif  // SRC_PLUGINS_PLUGINCALLBACKS_H_

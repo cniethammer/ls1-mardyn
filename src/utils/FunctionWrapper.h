@@ -2,6 +2,7 @@
 
 #include <any>
 #include <functional>
+#include <typeinfo>
 
 /**
  * Class that wraps a function.
@@ -84,6 +85,12 @@ public:
 	auto get() const {
 		return std::any_cast<std::function<R(Args...)>>(_myFunction);
 	}
+
+	/**
+	 * Get the type of the stored function object, e.g. to report a mismatch in get().
+	 * @return Type of the stored std::function, or typeid(void) if empty.
+	 */
+	const std::type_info& type() const noexcept { return _myFunction.type(); }
 
 private:
 	std::any _myFunction;
