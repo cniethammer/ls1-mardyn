@@ -1,0 +1,78 @@
+name: "Build"
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+  workflow_dispatch:
+
+# abort old runs of the same branch or PR if a new one is started
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build (${{ matrix.compiler }}, Release, Open MPI)
+    runs-on: ubuntu-24.04
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - compiler: gcc
+            cc: gcc
+            cxx: g++
+          - compiler: clang
+            cc: clang
+            cxx: clang++
+
+    env:
+      CC: ${{ matrix.cc }}
+      CXX: ${{ matrix.cxx }}
+      OMP_NUM_THREADS: 2
+      INSTALL_PREFIX: ${{ github.workspace }}/install
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v5
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y --no-install-recommends \
+          ninja-build \
+          libopenmpi-dev \
+          libomp-dev \
+          libcppunit-dev \
+          catch2 \
+          libxerces-c-dev \
+          libadios2-mpi-c++11-dev
+
+    - name: Configure
+      run: |
+        # AVX2 instead of the default NATIVE, so the binaries also run on other runners
+        # Debian/Ubuntu installs the ADIOS2 CMake config in a subdirectory that find_package() does not search
+        cmake -S . -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DENABLE_MPI=ON \
+          -DENABLE_OPENMP=ON \
+          -DENABLE_UNIT_TESTS=ON \
+          -DENABLE_VTK=ON \
+          -DENABLE_ADIOS2=ON \
+          -DADIOS2_DIR=/usr/lib/x86_64-linux-gnu/cmake/adios2/mpi
+
+    - name: Build
+      run: cmake --build build
+
+    - name: Run unit tests
+      run: ctest --test-dir build --output-on-failure
+
+    - name: Install
+      run: cmake --install build --prefix "${INSTALL_PREFIX}"
+
+    - name: Check installation
+      run: |
+        find "${INSTALL_PREFIX}" -type f | sort
+        "${INSTALL_PREFIX}/bin/MarDyn" --version
