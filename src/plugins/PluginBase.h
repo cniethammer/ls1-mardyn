@@ -8,136 +8,131 @@ class DomainDecompBase;
 class Domain;
 class XMLfileUnits;
 
-
 /** @todo Mark all parameters as const: output plugins should not modify the state of the simulation. */
 /** @todo get rid of the domain parameter */
-/** @todo clean up all classes implementing this interface */
 
-
-/** @brief The PluginBase class provides the interface for any kind of output/plugin classes - called "(output) plugins".
+/** @brief Interface for plugins, i.e. classes that are called at fixed points of the simulation.
  *
- * There are a lot of different things that one might want to write out during a simulation,
- * e.g. thermodynamic values, graphical information, time measurements, ...
- * For all cases in which this output happens regularly at the end of each time step
- * the PluginBase class provides a common interface. The interface provides access to
- * the most important data: the particle container and the domain decomposition.
+ * Plugins extend the simulation without changing its core, e.g. to write thermodynamic values,
+ * checkpoints or visualization data, to sample profiles, or to modify the system, e.g. by
+ * applying additional forces or controlling regions. Plugins are selected by name in the input file:
+ * \code{.xml}
+   <plugin name="MyPlugin"> <!-- options of the plugin --> </plugin>
+   \endcode
+ * The same plugin may be listed several times; each entry creates a separate instance.
  *
- * Of course, several plugins plugins will be needed in some cases. So the idea is, that
- * all available plugins are registered in the PluginFactory and initialized
- * in the Simulation at runtime as requested by the input file. The plugin will then be
- * called at the respective points in the simulation automatically.
+ * The simulation calls the methods of all plugins in the order the plugins are listed in the input:
+ * -# readXML() once directly after the plugin is created while reading the input. The phase space
+ *    is not read at this point.
+ * -# PluginCallbacks::registerCallbacks() and PluginCallbacks::accessAllCallbacks(), if the plugin
+ *    also implements the optional PluginCallbacks interface.
+ * -# init() once before the first time step, after the initial forces have been calculated.
+ * -# afterForces() and endStep() once for the initial state before the first time step.
+ * -# In each time step: beforeEventNewTimestep(), beforeForces(), siteWiseForces(), afterForces()
+ *    and endStep().
+ * -# finish() once after the last time step.
  *
- * Therefore, each plugin has to implement at least the following five methods:
- * - init: will be called once in the beginning
- * - readXML: reads in the plugin configuration from config.xml
- * - endStep: will be called each time step
- * - finish: will be called at the end
- * - getPluginName: returning the output pulugin name
- * - createInstance: returning an instance object as follows
+ * A plugin has to implement readXML(), init(), endStep(), finish() and getPluginName(); the other
+ * methods do nothing by default. In addition, each plugin class has to provide a static function
+ * creating an instance, which is used by the PluginFactory to create plugins by name:
  * \code{.cpp}
- *   static PluginBase* createInstance() { return new MyPlugin(); }   // class name is MyPlugin
+ *   static PluginBase* createInstance() { return new MyPlugin(); }
  * \endcode
+ * See plugins/ExamplePlugin for a complete example.
  */
 class PluginBase {
 public:
-    //! @brief Subclasses should use their constructur to pass parameters (e.g. filenames)
-    PluginBase(){}
+	PluginBase() = default;
 
-    virtual ~PluginBase(){}
+	virtual ~PluginBase() = default;
 
-    /** @brief Method init will be called at the begin of the simulation.
-     *
-     * This method will be called once at the begin of the simulation just
-     * right before the main time step loop.
-     * It can be used e.g. to open output files or initialize statistics.
-     * @param particleContainer  particle container storing the (local) molecules
-     * @param domainDecomp       domain decomposition in use
-     * @param domain
-     */
-    virtual void init(ParticleContainer* particleContainer,
-                            DomainDecompBase* domainDecomp, Domain* domain) = 0;
+	/** @brief Called once at the begin of the simulation, before the first time step.
+	 *
+	 * The phase space and the initial forces are available. Can be used e.g. to open output files
+	 * or to initialize statistics.
+	 * @param particleContainer  particle container storing the (local) molecules
+	 * @param domainDecomp       domain decomposition in use
+	 * @param domain
+	 */
+	virtual void init(ParticleContainer* particleContainer, DomainDecompBase* domainDecomp, Domain* domain) = 0;
 
-    /** @brief Method readXML will be called once for each plugin section in the input file.
-     *
-     * This method can be used to read in parameters from the corresponding plugin section in
-     * the xml config file. The method will be called once after an instance of the plugin
-     * is created.
-     *
-     * @note The same plugins may be specified multiple times in the xml config file.
-     *       It is the responsibility of the plugin to handle this case in a propper way.
-     *
-     * The following xml object structure will be provided to the plugin:
-     * \code{.xml}
-       <plugin name="plugin name">
-         <!-- options for the specific plugin -->
-       </plugin>
-       \endcode
-     *
-     * @param xmlconfig  section of the xml file
-     */
-    virtual void readXML(XMLfileUnits& xmlconfig) = 0;
+	/** @brief Reads the configuration of the plugin from its section in the input file.
+	 *
+	 * Called once directly after the plugin has been created. The current node of @p xmlconfig is
+	 * the plugin node, so options are queried relative to it:
+	 * \code{.xml}
+	   <plugin name="MyPlugin">
+	     <!-- options of the plugin -->
+	   </plugin>
+	   \endcode
+	 *
+	 * @param xmlconfig  input file with the plugin node as current node
+	 */
+	virtual void readXML(XMLfileUnits& xmlconfig) = 0;
 
+	/** @brief Called first thing in each time step.
+	 * @param particleContainer  particle container storing the (local) molecules
+	 * @param domainDecomp       domain decomposition in use
+	 * @param simstep            current time step
+	 */
+	virtual void beforeEventNewTimestep(ParticleContainer* /* particleContainer */,
+	                                    DomainDecompBase* /* domainDecomp */, unsigned long /* simstep */) {}
 
-    /** @brief Method will be called first thing in a new timestep. */
-	virtual void beforeEventNewTimestep(
-			ParticleContainer* /* particleContainer */, DomainDecompBase* /* domainDecomp */,
-			unsigned long /* simstep */
-	) {};
+	/** @brief Called in each time step before the forces are calculated.
+	 *
+	 * Forces must not be modified here, as they are reset by the force calculation.
+	 * @param particleContainer  particle container storing the (local) molecules
+	 * @param domainDecomp       domain decomposition in use
+	 * @param simstep            current time step
+	 */
+	virtual void beforeForces(ParticleContainer* /* particleContainer */, DomainDecompBase* /* domainDecomp */,
+	                          unsigned long /* simstep */) {}
 
-    /** @brief Method beforeForces will be called before forcefields have been applied
-     * no alterations w.r.t. Forces shall be made here
-     *
-     */
+	/** @brief Called in each time step after the pair forces have been calculated, while the forces
+	 * are still stored per site.
+	 *
+	 * Forces acting on single sites or on whole molecules can be added here.
+	 * @param particleContainer  particle container storing the (local) molecules
+	 * @param domainDecomp       domain decomposition in use
+	 * @param simstep            current time step
+	 */
+	virtual void siteWiseForces(ParticleContainer* /* particleContainer */, DomainDecompBase* /* domainDecomp */,
+	                            unsigned long /* simstep */) {}
 
-    virtual void beforeForces(
-            ParticleContainer* /* particleContainer */, DomainDecompBase* /* domainDecomp */,
-            unsigned long /* simstep */
-    ) {};
+	/** @brief Called after the forces have been calculated and summed up per molecule.
+	 *
+	 * Called in each time step and once for the initial state before the first time step. Site-wise
+	 * forces can no longer be modified here.
+	 * @param particleContainer  particle container storing the (local) molecules
+	 * @param domainDecomp       domain decomposition in use
+	 * @param simstep            current time step
+	 */
+	virtual void afterForces(ParticleContainer* /* particleContainer */, DomainDecompBase* /* domainDecomp */,
+	                         unsigned long /* simstep */) {}
 
-    /** @brief Method siteWiseForces will be called before forcefields have been applied
-     *  alterations to sitewise forces and fullMolecule forces can be made here
-     */
+	/** @brief Called at the end of each time step.
+	 *
+	 * Also called once for the initial state before the first time step. Can be used e.g. to write
+	 * data of the time step to a file or to perform additional computations.
+	 * @param particleContainer  particle container storing the (local) molecules
+	 * @param domainDecomp       domain decomposition in use
+	 * @param domain
+	 * @param simstep            current time step
+	 */
+	virtual void endStep(ParticleContainer* particleContainer, DomainDecompBase* domainDecomp, Domain* domain,
+	                     unsigned long simstep) = 0;
 
-    virtual void siteWiseForces(
-            ParticleContainer* /* particleContainer */, DomainDecompBase* /* domainDecomp */,
-            unsigned long /* simstep */
-    ) {};
+	/** @brief Called once at the end of the simulation, after the last time step.
+	 *
+	 * Can be used e.g. to close output files or to write final statistics.
+	 * @param particleContainer  particle container storing the (local) molecules
+	 * @param domainDecomp       domain decomposition in use
+	 * @param domain
+	 */
+	virtual void finish(ParticleContainer* particleContainer, DomainDecompBase* domainDecomp, Domain* domain) = 0;
 
-    /** @brief Method afterForces will be called after forcefields have been applied
-     *  no sitewise Forces can be applied here
-     */
-    virtual void afterForces(
-            ParticleContainer* /* particleContainer */, DomainDecompBase* /* domainDecomp */,
-            unsigned long /* simstep */
-    ) {};
-
-
-    // make pure virtual?
-    /** @brief Method endStep will be called at the end of each time step.
-     *
-     * This method will be called every time step passing the simstep as an additional parameter.
-     * It can be used e.g. to write per time step data to a file or perform additional computations.
-     * @param particleContainer  particle container storing the (local) molecules
-     * @param domainDecomp       domain decomposition in use
-     * @param domain
-     */
-    virtual void endStep(
-            ParticleContainer* particleContainer, DomainDecompBase* domainDecomp,
-            Domain* domain, unsigned long simstep) = 0;
-
-    /** @brief Method finish will be called at the end of the simulation
-     *
-     * This method will be called once at the end of the simulation.
-     * It can be used e.g. to closing output files or writing final statistics.
-     * @param particleContainer  particle container storing the (local) molecules
-     * @param domainDecomp       domain decomposition in use
-     * @param domain
-     */
-    virtual void finish(ParticleContainer* particleContainer,
-                              DomainDecompBase* domainDecomp, Domain* domain) = 0;
-
-    /** @brief return the name of the plugin */
-    virtual std::string getPluginName()  = 0;
+	/** @brief Returns the name of the plugin, as used in the input file to select it. */
+	virtual std::string getPluginName() = 0;
 };
 
-#endif /* PLUGINBASE_H */
+#endif /* PLUGINBASE_H_ */
