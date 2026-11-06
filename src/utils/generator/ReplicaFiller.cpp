@@ -165,7 +165,7 @@ void ReplicaFiller::readXML(XMLfileUnits& xmlconfig) {
 	if (auto originNode = xmlconfig.scopedChangeCurrentNode("origin")) {
 		Coordinate3D origin;
 		origin.readXML(xmlconfig);
-		origin.get(_origin);
+		_origin = origin.get();
 	}
 	Log::global_log->info() << "[ReplicaFiller] Base point for the replication: ["
 					   << _origin[0] << "," << _origin[1] << "," << _origin[2]
@@ -221,7 +221,7 @@ void ReplicaFiller::init() {
 	double c[3] = {0.0, 0.0, domain.getGlobalLength(2)};
 	lattice.init(triclinic, primitive, a, b, c);
 	_gridFiller.setObject(getObject());
-	_gridFiller.init(lattice, basisContainer.getBasis(), _origin);
+	_gridFiller.init(lattice, basisContainer.getBasis(), _origin.data());
 }
 
 int ReplicaFiller::getMolecule(Molecule* molecule) {

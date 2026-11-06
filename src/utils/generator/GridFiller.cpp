@@ -114,7 +114,7 @@ void GridFiller::readXML(XMLfileUnits& xmlconfig) {
 	}
 
 	Coordinate3D origin(xmlconfig, "latticeOrigin");
-	origin.get(_origin.data());
+	_origin = origin.get();
 	Log::global_log->info() << "Origin: " << _origin[0] << ", " << _origin[1] << ", " << _origin[2] << std::endl;
 }
 

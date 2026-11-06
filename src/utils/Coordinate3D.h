@@ -34,12 +34,6 @@ public:
 	double z() const { return _vec[2]; } //!< Get z component of coordinate (in reduced units)
 
 
-	/** @brief obtain coordinate vector values (in reduced units)
-	 *  @deprecated Use get() returning std::array<double, 3> instead.
-	 */
-	[[deprecated("Use get() returning std::array<double,3> instead")]]
-	void get(double vec[3]);
-
 	/** @brief obtain coordinate vector values
 	 *  @return array containing the x, y, z components (in reduced units)
 	 */

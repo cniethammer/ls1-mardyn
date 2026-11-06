@@ -11,6 +11,7 @@
 #ifndef OBJECTS_H
 #define OBJECTS_H
 
+#include <array>
 #include <memory>
 #include <cstdint>
 
@@ -71,8 +72,8 @@ public:
 	double lowerCorner(int d) { return _lowerCorner[d]; }
 
 private:
-	double _lowerCorner[3];
-	double _upperCorner[3];
+	std::array<double, 3> _lowerCorner;
+	std::array<double, 3> _upperCorner;
 };
 
 /** Class implementing a sphere */
@@ -101,7 +102,7 @@ public:
 	void getBboxMax(double rmax[3]);
 
 private:
-	double _center[3];
+	std::array<double, 3> _center;
 	double _radius;
 	double _radiusSquare;
 };
@@ -140,7 +141,7 @@ public:
 private:
 	double _radius;
 	double _height;
-	double _centerBase[3];
+	std::array<double, 3> _centerBase;
 	double _radiusSquare;
 	struct CylinderDirection {
 		ObjectAxis axis;
@@ -311,11 +312,7 @@ private:
 class ObjectShifter : public Object {
 public:
 	ObjectShifter();
-	ObjectShifter(std::shared_ptr<Object> obj, double shift[3]) : _obj(obj) {
-		_shift[0] = shift[0];
-		_shift[1] = shift[1];
-		_shift[2] = shift[2];
-	}
+	ObjectShifter(std::shared_ptr<Object> obj, const std::array<double, 3>& shift) : _obj(obj), _shift(shift) {}
 
 	/** @brief Read in XML configuration for ObjectIntersection and all its included objects.
 	 *
@@ -366,7 +363,7 @@ public:
 
 private:
 	std::shared_ptr<Object> _obj;
-	double _shift[3];
+	std::array<double, 3> _shift;
 };
 
 #endif /* OBJECTS_H */

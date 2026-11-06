@@ -17,8 +17,8 @@ Cuboid::Cuboid(double lower[3], double upper[3]) {
 void Cuboid::readXML(XMLfileUnits& xmlconfig) {
 	Coordinate3D lowerCorner(xmlconfig, "lower");
 	Coordinate3D upperCorner(xmlconfig, "upper");
-	lowerCorner.get(_lowerCorner);
-	upperCorner.get(_upperCorner);
+	_lowerCorner = lowerCorner.get();
+	_upperCorner = upperCorner.get();
 	Log::global_log->info() << "lower corner: " << _lowerCorner[0] << ", " << _lowerCorner[1] << ", " << _lowerCorner[2] << std::endl;
 	Log::global_log->info() << "upper corner: " << _upperCorner[0] << ", " << _upperCorner[1] << ", " << _upperCorner[2] << std::endl;
 }
@@ -57,7 +57,7 @@ Sphere::Sphere(double center[3], double r) : _radius(r), _radiusSquare(r*r) {
 
 void Sphere::readXML(XMLfileUnits& xmlconfig) {
 	Coordinate3D center(xmlconfig, "center");
-	center.get(_center);
+	_center = center.get();
 	Log::global_log->info() << "center coordinate: "<< _center[0] << ", " << _center[1] << ", " << _center[2] << std::endl;
 	xmlconfig.getNodeValueReduced("radius", _radius);
 	_radiusSquare = _radius*_radius;
@@ -105,7 +105,7 @@ Cylinder::Cylinder(double centerBase[3], double radius, double height) : _radius
 
 void Cylinder::readXML(XMLfileUnits& xmlconfig) {
 	Coordinate3D centerBase(xmlconfig, "centerBase");
-	centerBase.get(_centerBase);
+	_centerBase = centerBase.get();
 	Log::global_log->info() << "center base coordinate: "<< _centerBase[0] << ", " << _centerBase[1] << ", " << _centerBase[2] << std::endl;
 	xmlconfig.getNodeValueReduced("radius", _radius);
 	_radiusSquare = _radius*_radius;
@@ -218,11 +218,7 @@ void ObjectIntersection::readXML(XMLfileUnits& xmlconfig) {
 }
 
 
-ObjectShifter::ObjectShifter() : _obj(nullptr) {
-	_shift[0] = 0.0;
-	_shift[1] = 0.0;
-	_shift[2] = 0.0;
-}
+ObjectShifter::ObjectShifter() : _obj(nullptr), _shift{0.0, 0.0, 0.0} {}
 
 void ObjectShifter::readXML(XMLfileUnits& xmlconfig) {
 	ObjectFactory object_factory;
@@ -233,6 +229,6 @@ void ObjectShifter::readXML(XMLfileUnits& xmlconfig) {
 		_obj->readXML(xmlconfig);
 	}
 	Coordinate3D shift(xmlconfig, "shift");
-	shift.get(_shift);
+	_shift = shift.get();
 	Log::global_log->info() << "shift vector: "<< _shift[0] << ", " << _shift[1] << ", " << _shift[2] << std::endl;
 }

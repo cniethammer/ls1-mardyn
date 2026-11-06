@@ -10,6 +10,7 @@
 
 #pragma once
 
+#include <array>
 #include <memory>
 #include <string>
 
@@ -71,7 +72,7 @@ class ReplicaFiller : public ObjectFillerBase {
 	std::shared_ptr<InputBase> _inputReader;
 	GridFiller _gridFiller;
 	std::shared_ptr<Object> _object;
-	double _origin[3];
+	std::array<double, 3> _origin;
 	unsigned int _componentid {0};
 	bool _keepComponent {true};
 };
