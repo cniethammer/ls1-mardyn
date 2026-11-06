@@ -264,7 +264,12 @@ unsigned int SysMon::updateVariables_mallinfo()
 #ifdef SYSMON_ENABLE_MALLINFO
 	long val=0;
 
+	// mallinfo() is deprecated since glibc 2.33, as its int fields overflow for more than 2 GiB
+#if defined(__GLIBC__) && (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 33))
+	struct mallinfo2 mallinfodata=mallinfo2();
+#else
 	struct mallinfo mallinfodata=mallinfo();
+#endif
 
 	val=long(mallinfodata.arena);
 	_variableset->setVariable("mallinfo","arena",val);
