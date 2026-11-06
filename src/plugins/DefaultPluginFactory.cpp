@@ -49,7 +49,6 @@
 #include "plugins/NEMD/VelocityExchange.h"
 #include "plugins/Permittivity.h"
 #include "plugins/SpatialProfile.h"
-#include "plugins/TestPlugin.h"
 #include "plugins/VectorizationTuner.h"
 #include "plugins/WallPotential.h"
 #include "plugins/EnergyRAPL.h"
@@ -118,7 +117,6 @@ DefaultPluginFactory::DefaultPluginFactory() {
 	REGISTER_PLUGIN(ExtractPhase);
 	REGISTER_PLUGIN(ResultWriter);
 	REGISTER_PLUGIN(SysMonOutput);
-	REGISTER_PLUGIN(TestPlugin);
 	REGISTER_PLUGIN(TimerWriter);
 	REGISTER_PLUGIN(VectorizationTuner);
 	REGISTER_PLUGIN(WallPotential);

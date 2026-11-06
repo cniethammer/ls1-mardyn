@@ -55,7 +55,6 @@ RDF | radial distribution function | Calculate and write the radial distribution
 RegionSampling | sampling, region, profiles, velocity distribution function (VDF), cylinder shells | Sampling profiles of various scalar and vector quantities within multiple regions, e.g. temperature, density, force, hydrodynamic velocity. Moreover velocity distribution function (VDF) and sampling of a density field rho(y,r) in cylinder shells, depending on a cartesian coordinate y and radius r is supported.
 ResultWriter | print, macroscopic thermodynamic quantities, file | Write macroscopic thermodynamic quantities to file, such as temperature, pressure, BetaTrans, BetaRot, cv, number of molecules and number of cavities (?).
 SysMonOutput | todo | todo
-TestPlugin | test | Test correctness of plugin calls within Simulation. Simpler version without XML input of ExamplePlugin
 TimerWriter | Timers, mpi, print, load balance | Prints the average time for the specified timers as a transient. Separate output for each rank. Can be used to gather information of the load balance.
 VectorizationTuner | todo | todo
 VelocityExchange | temperature gradient | Swap the velocities and angular momentum of two particles. One particle is the warmest (fastest) in the specified cold region, the other one is the coldest (slowest) in the specified warm region.
