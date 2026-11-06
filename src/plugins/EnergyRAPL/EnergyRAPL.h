@@ -1,5 +1,5 @@
-#ifndef SRC_PLUGIN_ENERGYRAPL_H_
-#define SRC_PLUGIN_ENERGYRAPL_H_
+#ifndef SRC_PLUGINS_ENERGYRAPL_ENERGYRAPL_H_
+#define SRC_PLUGINS_ENERGYRAPL_ENERGYRAPL_H_
 
 #include <chrono>
 #include <string>
@@ -229,4 +229,4 @@ public:
 	void readXML(XMLfileUnits& xmlconfig) override;
 };
 
-#endif  // SRC_PLUGIN_ENERGYRAPL_H_
+#endif  // SRC_PLUGINS_ENERGYRAPL_ENERGYRAPL_H_

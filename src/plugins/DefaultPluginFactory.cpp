@@ -51,7 +51,6 @@
 #include "plugins/SpatialProfile.h"
 #include "plugins/VectorizationTuner.h"
 #include "plugins/WallPotential.h"
-#include "plugins/EnergyRAPL.h"
 #ifdef ENABLE_ADIOS2
 #include "io/Adios2Writer.h"
 #endif
@@ -121,7 +120,6 @@ DefaultPluginFactory::DefaultPluginFactory() {
 	REGISTER_PLUGIN(VectorizationTuner);
 	REGISTER_PLUGIN(WallPotential);
 	REGISTER_PLUGIN(XyzWriter);
-	REGISTER_PLUGIN(EnergyRAPL);
 #ifdef VTK
 	REGISTER_PLUGIN(VTKMoleculeWriter);
 #ifndef MARDYN_AUTOPAS

@@ -5,7 +5,6 @@ target_sources(MarDyn
         DirectedPM.cpp
         Dropaccelerator.cpp
         Dropaligner.cpp
-        EnergyRAPL.cpp
         FixRegion.cpp
         InMemoryCheckpointing.cpp
         LoadImbalanceThroughSleepPlugin.cpp
