@@ -30,7 +30,7 @@ set(MARDYN_PLUGIN_DEFAULT_REGISTRY "plugins")
 #              a static createInstance() method
 #   REGISTRY   registry the plugin classes are added to (default: plugins)
 #   REQUIRES   conditions that must be met for the plugin to be available, e.g. ENABLE_VTK
-#              or "NOT MARDYN_AUTOPAS"; otherwise the option is hidden and forced OFF
+#              or "NOT ENABLE_AUTOPAS"; otherwise the option is hidden and forced OFF
 #   LIBRARIES  additional libraries the plugin links against
 #   DEFAULT    default value of the option (default: ON)
 #
