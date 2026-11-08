@@ -2,16 +2,16 @@
 // Created by Kruegener on 8/19/2018.
 //
 
-#include "SpatialProfile.h"
-#include "plugins/profiles/ProfileBase.h"
-#include "plugins/profiles/DensityProfile.h"
-#include "plugins/profiles/Velocity3dProfile.h"
-#include "plugins/profiles/VelocityAbsProfile.h"
-#include "plugins/profiles/TemperatureProfile.h"
-#include "plugins/profiles/KineticProfile.h"
-#include "plugins/profiles/DOFProfile.h"
-#include "plugins/profiles/VirialProfile.h"
-#include "plugins/profiles/Virial2DProfile.h"
+#include "plugins/SpatialProfile/SpatialProfile.h"
+#include "plugins/SpatialProfile/profiles/ProfileBase.h"
+#include "plugins/SpatialProfile/profiles/DensityProfile.h"
+#include "plugins/SpatialProfile/profiles/Velocity3dProfile.h"
+#include "plugins/SpatialProfile/profiles/VelocityAbsProfile.h"
+#include "plugins/SpatialProfile/profiles/TemperatureProfile.h"
+#include "plugins/SpatialProfile/profiles/KineticProfile.h"
+#include "plugins/SpatialProfile/profiles/DOFProfile.h"
+#include "plugins/SpatialProfile/profiles/VirialProfile.h"
+#include "plugins/SpatialProfile/profiles/Virial2DProfile.h"
 
 void SpatialProfile::accessAllCallbacks(const std::map<std::string, FunctionWrapper>& callbackMap) {
 	// FixRegion has not computed its molecule count yet, so only store the callback here.

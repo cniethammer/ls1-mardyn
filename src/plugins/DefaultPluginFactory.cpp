@@ -10,7 +10,6 @@
 // General plugins
 #include "plugins/Mirror.h"
 #include "plugins/NEMD/DistControl.h"
-#include "plugins/SpatialProfile.h"
 #include "plugins/VectorizationTuner.h"
 #ifdef MAMICO_COUPLING
 #include "plugins/MamicoCoupling.h"
@@ -24,7 +23,6 @@ DefaultPluginFactory::DefaultPluginFactory() {
 
 	// plugins not yet moved to their own directories
 
-	REGISTER_PLUGIN(SpatialProfile);
 	REGISTER_PLUGIN(Mirror);
 	REGISTER_PLUGIN(ODF);
 	REGISTER_PLUGIN(RDF);

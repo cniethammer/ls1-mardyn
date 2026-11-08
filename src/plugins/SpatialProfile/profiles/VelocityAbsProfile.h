@@ -6,7 +6,7 @@
 #define MARDYN_TRUNK_VELOCITYABSPROFILE_H
 
 #include "ProfileBase.h"
-#include "plugins/SpatialProfile.h"
+#include "plugins/SpatialProfile/SpatialProfile.h"
 
 class DensityProfile;
 

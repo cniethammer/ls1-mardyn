@@ -6,7 +6,7 @@
 #define MARDYN_VIRIAL_H
 
 #include "ProfileBase.h"
-#include "plugins/SpatialProfile.h"
+#include "plugins/SpatialProfile/SpatialProfile.h"
 
 /* @brief VirialProfile is writing a special 1D output in Y dimension and does therefore
 	 * not call the normal writeMatrix function. The output is always the same, regardless

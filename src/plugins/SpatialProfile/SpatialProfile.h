@@ -7,9 +7,9 @@
 
 #include <vector>
 
-#include <plugins/profiles/ProfileBase.h>
-#include "PluginBase.h"
-#include "PluginCallbacks.h"
+#include "plugins/SpatialProfile/profiles/ProfileBase.h"
+#include "plugins/PluginBase.h"
+#include "plugins/PluginCallbacks.h"
 #include "Domain.h"
 #include "parallel/DomainDecompBase.h"
 #include "particleContainer/ParticleContainer.h"
@@ -34,7 +34,7 @@ class VirialProfile;
 class Virial2DProfile;
 
 
-/** @brief SpatialProfile is a Plugin that is called like any other plugin derived from PluginBase. It handles all profiles in /plugins/profiles. <br>
+/** @brief SpatialProfile is a Plugin that is called like any other plugin derived from PluginBase. It handles all profiles in plugins/SpatialProfile/profiles. <br>
  * New profiles must be added via the plugins/ ProfileBase to comply with this Plugin. <br>
  *
  *

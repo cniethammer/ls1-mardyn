@@ -5,7 +5,6 @@ target_sources(MarDyn
         Mirror.cpp
         PluginCallbacks.cpp
         PluginLoader.cpp
-        SpatialProfile.cpp
         VectorizationTuner.cpp
     )
 
@@ -13,8 +12,6 @@ if(ENABLE_UNIT_TESTS)
     add_subdirectory(tests)
 endif(ENABLE_UNIT_TESTS)
 
-
-add_subdirectory(profiles)
 
 # self-contained plugins in subdirectories, see cmake/plugins.cmake
 mardyn_add_plugin_subdirectories()

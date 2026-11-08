@@ -6,7 +6,7 @@
 #define MARDYN_KINETICPROFILE_H
 
 #include "ProfileBase.h"
-#include "plugins/SpatialProfile.h"
+#include "plugins/SpatialProfile/SpatialProfile.h"
 
 /**
  * @brief Records (NO OUTPUT) the 2xKinetic Profile of molecules per bin specified by Sampling grid in KartesianProfile.

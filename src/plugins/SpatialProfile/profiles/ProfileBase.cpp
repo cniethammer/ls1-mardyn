@@ -5,7 +5,7 @@
 #include <sstream>
 
 #include "ProfileBase.h"
-#include "plugins/SpatialProfile.h"
+#include "plugins/SpatialProfile/SpatialProfile.h"
 #include "utils/mardyn_assert.h"
 
 void ProfileBase::writeMatrix (std::ofstream& outfile) {

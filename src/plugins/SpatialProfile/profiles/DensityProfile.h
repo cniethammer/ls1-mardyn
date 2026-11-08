@@ -6,7 +6,7 @@
 #define MARDYN_TRUNK_DENSITYPROFILE_H
 
 #include "ProfileBase.h"
-#include "plugins/SpatialProfile.h"
+#include "plugins/SpatialProfile/SpatialProfile.h"
 
 /**
  * @brief Outputs the number density of molecules per bin specified by Sampling grid in KartesianProfile.

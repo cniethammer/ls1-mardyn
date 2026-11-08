@@ -6,7 +6,7 @@
 #define MARDYN_VIRIAL2D_H
 
 #include "ProfileBase.h"
-#include "plugins/SpatialProfile.h"
+#include "plugins/SpatialProfile/SpatialProfile.h"
 
 
 class DensityProfile;

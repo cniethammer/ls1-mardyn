@@ -3,7 +3,7 @@
 //
 
 #include "VelocityAbsProfile.h"
-#include "plugins/profiles/DensityProfile.h"
+#include "plugins/SpatialProfile/profiles/DensityProfile.h"
 
 void VelocityAbsProfile::output(std::string prefix, long unsigned accumulatedDatasets) {
 	Log::global_log->info() << "[VelocityAbsProfile] output" << std::endl;

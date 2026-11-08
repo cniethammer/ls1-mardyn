@@ -7,8 +7,8 @@
 
 #include <functional>
 
-#include "../../Domain.h"
-#include "../../parallel/DomainDecompBase.h"
+#include "Domain.h"
+#include "parallel/DomainDecompBase.h"
 
 class SpatialProfile;
 
