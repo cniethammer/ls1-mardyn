@@ -9,11 +9,14 @@
  */
 class ASCIIReader : public InputBase {
 public:
+	std::string getPluginName() const override { return "ASCII"; }
+	static InputBase* createInstance() { return new ASCIIReader(); }
+
 	ASCIIReader();
 
 	~ASCIIReader() {}
 
-	void readXML(XMLfileUnits& xmlconfig);
+	void readXML(XMLfileUnits& xmlconfig) override;
 
 	/** @brief Set the phase space file to be read.
 	 *
@@ -56,7 +59,7 @@ public:
 	//!     - For each pair of different components: xi, eta (both double)
 	//!     - epsilonRF (double)
 	//! \li NumberOfMolecules: One token follows with the number of molecules
-	void readPhaseSpaceHeader(Domain* domain);
+	void readPhaseSpaceHeader(Domain* domain) override;
 
 	//! @brief reads in the data of all molecules
 	//!
@@ -72,7 +75,7 @@ public:
 	//!
 	//! @param particleContainer Here the Molecules from the input file are stored
 	//! @return Number of molecules read in from the input phase space file
-	unsigned long readPhaseSpace(ParticleContainer* particleContainer, Domain* domain, DomainDecompBase* domainDecomp);
+	unsigned long readPhaseSpace(ParticleContainer* particleContainer, Domain* domain, DomainDecompBase* domainDecomp) override;
 
 private:
 

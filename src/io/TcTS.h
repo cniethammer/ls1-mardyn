@@ -12,11 +12,14 @@
 class MkTcTSGenerator : public InputBase {
 
 public:
+	std::string getPluginName() const override { return "mkTcTS"; }
+	static InputBase* createInstance() { return new MkTcTSGenerator(); }
+
 	MkTcTSGenerator() {}
 
 	~MkTcTSGenerator() {}
 
-	unsigned long readPhaseSpace(ParticleContainer* particleContainer, Domain* domain, DomainDecompBase* domainDecomp);
+	unsigned long readPhaseSpace(ParticleContainer* particleContainer, Domain* domain, DomainDecompBase* domainDecomp) override;
 
 
 	/** @brief Read in XML configuration for MkTcTSGenerator and all its included objects.
@@ -33,7 +36,7 @@ public:
 	   </generator>
 	   \endcode
 	 */
-	void readXML(XMLfileUnits& xmlconfig);
+	void readXML(XMLfileUnits& xmlconfig) override;
 
 private:
 	double l1_ratio;

@@ -21,6 +21,8 @@ class MoleculeIdPool;
  */
 class ObjectGenerator : public InputBase {
 public:
+	std::string getPluginName() const override { return "ObjectGenerator"; }
+
 	ObjectGenerator() : _filler(nullptr), _object(nullptr), _velocityAssigner(nullptr), _moleculeIdPool(nullptr) {};
 
 	/** @brief Read in XML configuration for ObjectGenerator and all its included objects.
@@ -35,7 +37,7 @@ public:
 	   </objectgenerator>
 	   \endcode
 	 */
-	virtual void readXML(XMLfileUnits& xmlconfig);
+	void readXML(XMLfileUnits& xmlconfig) override;
 
 	void setFiller(std::shared_ptr<ObjectFillerBase> filler) { _filler = filler; }
 
@@ -45,7 +47,8 @@ public:
 
 	void setMoleculeIDPool(std::shared_ptr<MoleculeIdPool> moleculeIdPool) { _moleculeIdPool = moleculeIdPool; }
 
-	unsigned long readPhaseSpace(ParticleContainer* particleContainer, Domain* domain, DomainDecompBase* domainDecomp);
+
+	unsigned long readPhaseSpace(ParticleContainer* particleContainer, Domain* domain, DomainDecompBase* domainDecomp) override;
 
 private:
 	std::shared_ptr<ObjectFillerBase> _filler;

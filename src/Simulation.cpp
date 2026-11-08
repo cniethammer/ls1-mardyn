@@ -47,19 +47,10 @@
 #include "plugins/DefaultPluginFactory.h"
 #include "plugins/PluginLoader.h"
 
-#include "io/ASCIIReader.h"
-#include "io/BinaryReader.h"
-#include "io/CubicGridGeneratorInternal.h"
+#include "io/DefaultReaderFactory.h"
+#include "io/InputBase.h"
 #include "io/MemoryProfiler.h"
-#include "io/Mkesfera.h"
-#include "io/MultiObjectGenerator.h"
-#include "io/PerCellGenerator.h"
-#include "io/ReplicaGenerator.h"
-#include "io/TcTS.h"
 #include "io/TimerProfiler.h"
-#ifdef ENABLE_ADIOS2
-#include "io/adios2/Adios2Reader.h"
-#endif
 
 #include "ensemble/GrandCanonicalEnsemble.h"
 #include "ensemble/CanonicalEnsemble.h"
@@ -70,6 +61,7 @@
 
 #include "utils/FileUtils.h"
 #include "utils/Logger.h"
+#include "utils/String_utils.h"
 #include "utils/mardyn_assert.h"
 
 #include "longRange/LongRangeCorrection.h"
@@ -110,7 +102,6 @@ Simulation::Simulation()
 	_domainDecomposition(nullptr),
 	_integrator(nullptr),
 	_domain(nullptr),
-	_inputReader(nullptr),
 	_outputPrefix("mardyn"),
 	_momentumInterval(1000),
 	_rand(8624),
@@ -145,8 +136,7 @@ Simulation::~Simulation() {
 	_integrator = nullptr;
 	delete _domain;
 	_domain = nullptr;
-	delete _inputReader;
-	_inputReader = nullptr;
+	_inputReader.reset();
 	delete _longRangeCorrection;
 	_longRangeCorrection = nullptr;
 	delete _temperatureControl;
@@ -631,61 +621,33 @@ void Simulation::readXML(XMLfileUnits& xmlconfig) {
 	Log::global_log -> info() << "Accessed callbacks." << std::endl;
 
 
+	// phase space source: either a file of the given type or a generator, see InputBase
+	DefaultReaderFactory readerFactory;
+	auto createReader = [&](const std::string& name, const char* kind) {
+		try {
+			_inputReader.reset(readerFactory.create(name));
+		} catch (const PluginNotFoundError& e) {
+			std::ostringstream error_message;
+			error_message << "Unknown " << kind << ": " << name << ". Available phase space readers and generators: "
+			              << string_utils::join(readerFactory.getPluginNames(), ", ") << std::endl;
+			MARDYN_EXIT(error_message.str());
+		}
+		_inputReader->readXML(xmlconfig);
+	};
+
 	if(auto fileNode = xmlconfig.scopedChangeCurrentNode("ensemble/phasespacepoint/file")) {
 		Log::global_log->info() << "Reading phase space from file." << std::endl;
 		std::string pspfiletype;
 		xmlconfig.getNodeValue("@type", pspfiletype);
 		Log::global_log->info() << "Phase space file type: " << pspfiletype << std::endl;
-
-		if (pspfiletype == "ASCII") {
-			_inputReader = new ASCIIReader();
-			_inputReader->readXML(xmlconfig);
-		}
-		else if (pspfiletype == "binary") {
-			_inputReader = new BinaryReader();
-			_inputReader->readXML(xmlconfig);
-		}
-#ifdef ENABLE_ADIOS2
-        else if (pspfiletype == "adios2") {
-			_inputReader = new Adios2Reader();
-			_inputReader->readXML(xmlconfig);
-		}
-#endif
-		else {
-			std::ostringstream error_message;
-			error_message << "Unknown phase space file type" << std::endl;
-			MARDYN_EXIT(error_message.str());
-		}
+		createReader(pspfiletype, "phase space file type");
 	}
 
 	if(auto generatorNode = xmlconfig.scopedChangeCurrentNode("ensemble/phasespacepoint/generator")) {
 		std::string generatorName;
 		xmlconfig.getNodeValue("@name", generatorName);
 		Log::global_log->info() << "Initializing phase space using generator: " << generatorName << std::endl;
-		if(generatorName == "MultiObjectGenerator") {
-			_inputReader = new MultiObjectGenerator();
-		}
-		else if(generatorName == "mkesfera") {
-			_inputReader = new MkesferaGenerator();
-		}
-		else if(generatorName == "mkTcTS") {
-			_inputReader = new MkTcTSGenerator();
-		}
-		else if (generatorName == "CubicGridGenerator") {
-			_inputReader = new CubicGridGeneratorInternal();
-		}
-		else if (generatorName == "ReplicaGenerator") {
-			_inputReader = new ReplicaGenerator();
-		}
-		else if (generatorName == "PerCellGenerator") {
-			_inputReader = new PerCellGenerator();
-		}
-		else {
-			std::ostringstream error_message;
-			error_message << "Unknown generator: " << generatorName << std::endl;
-			MARDYN_EXIT(error_message.str());
-		}
-		_inputReader->readXML(xmlconfig);
+		createReader(generatorName, "generator");
 	}
 
 	if(_inputReader) {

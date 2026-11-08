@@ -38,6 +38,9 @@
 
 class Adios2Reader : public InputBase {
 public:
+	std::string getPluginName() const override { return "adios2"; }
+	static InputBase* createInstance() { return new Adios2Reader(); }
+
 	Adios2Reader() = default;
 	~Adios2Reader() override = default;
 
@@ -62,8 +65,6 @@ public:
 
 	void testInit(std::string infile = "mardyn.bp", int step = 0, std::string adios2enginetype = "BP4",
 				  std::string mode = "rootOnly");
-
-	std::string getPluginName() { return std::string("Adios2Reader"); }
 
 	unsigned long readPhaseSpace(ParticleContainer* particleContainer, Domain* domain, DomainDecompBase* domainDecomp) override;
 

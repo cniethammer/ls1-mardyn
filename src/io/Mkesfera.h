@@ -13,11 +13,15 @@
 class MkesferaGenerator : public InputBase {
 
 public:
+	std::string getPluginName() const override { return "mkesfera"; }
+	static InputBase* createInstance() { return new MkesferaGenerator(); }
+
 	MkesferaGenerator() {}
 
 	~MkesferaGenerator() {}
 
-	unsigned long readPhaseSpace(ParticleContainer* particleContainer, Domain* domain, DomainDecompBase* domainDecomp);
+
+	unsigned long readPhaseSpace(ParticleContainer* particleContainer, Domain* domain, DomainDecompBase* domainDecomp) override;
 
 	/** @brief Read in XML configuration for MkesferaGenerator and all its included objects.
 	 *
@@ -37,7 +41,7 @@ public:
 	   </generator>
 	   \endcode
 	 */
-	void readXML(XMLfileUnits& xmlconfig);
+	void readXML(XMLfileUnits& xmlconfig) override;
 
 private:
 	double R_i, R_o;

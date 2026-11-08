@@ -23,11 +23,14 @@ private:
 	bool _binaryMixture;
 
 public:
+	std::string getPluginName() const override { return "CubicGridGenerator"; }
+	static InputBase* createInstance() { return new CubicGridGeneratorInternal(); }
+
 	CubicGridGeneratorInternal();
 	virtual ~CubicGridGeneratorInternal() {
 	}
 
-	unsigned long readPhaseSpace(ParticleContainer *particleContainer, Domain *domain, DomainDecompBase *domainDecomp);
+	unsigned long readPhaseSpace(ParticleContainer *particleContainer, Domain *domain, DomainDecompBase *domainDecomp) override;
 
 	/** @brief Read in XML configuration for MkTcTSGenerator and all its included objects.
 	 *
@@ -42,7 +45,7 @@ public:
 	 </generator>
 	 \endcode
 	 */
-	void readXML(XMLfileUnits& xmlconfig);
+	void readXML(XMLfileUnits& xmlconfig) override;
 private:
 
 	/**

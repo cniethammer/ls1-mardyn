@@ -12,6 +12,9 @@ class VelocityAssignerBase;
 
 class MultiObjectGenerator : public InputBase {
 public:
+	std::string getPluginName() const override { return "MultiObjectGenerator"; }
+	static InputBase* createInstance() { return new MultiObjectGenerator(); }
+
 	MultiObjectGenerator() : _globalNumMolecules(0) {}
 
 	~MultiObjectGenerator();
@@ -28,9 +31,10 @@ public:
 	   </generator >
 	   \endcode
 	 */
-	virtual void readXML(XMLfileUnits& xmlconfig);
+	void readXML(XMLfileUnits& xmlconfig) override;
 
-	unsigned long readPhaseSpace(ParticleContainer* particleContainer, Domain* domain, DomainDecompBase* domainDecomp);
+
+	unsigned long readPhaseSpace(ParticleContainer* particleContainer, Domain* domain, DomainDecompBase* domainDecomp) override;
 
 private:
 

@@ -17,12 +17,15 @@
 class BinaryReader : public InputBase {
 
 public:
+	std::string getPluginName() const override { return "binary"; }
+	static InputBase* createInstance() { return new BinaryReader(); }
+
 
 	BinaryReader();
 
 	~BinaryReader();
 
-	void readXML(XMLfileUnits& xmlconfig);
+	void readXML(XMLfileUnits& xmlconfig) override;
 
 	//! @brief gets a filename and opens an ifstream associated with the given file
 	//!
@@ -70,7 +73,7 @@ public:
 	//! \li NumberOfMolecules: One token follows with the number of molecules
 	//!
 	//! An example can be seen in the documentation of this class
-	void readPhaseSpaceHeader(Domain* domain);
+	void readPhaseSpaceHeader(Domain* domain) override;
 
 	//! @brief reads in the data of all molecules
 	//!
@@ -87,7 +90,7 @@ public:
 	//! An example can be seen in the documentation of this class
 	//! @param particleContainer Here the Molecules from the input file are stored
 	//! @return Highest molecule ID found in the input phase space file.
-	unsigned long readPhaseSpace(ParticleContainer* particleContainer, Domain* domain, DomainDecompBase* domainDecomp);
+	unsigned long readPhaseSpace(ParticleContainer* particleContainer, Domain* domain, DomainDecompBase* domainDecomp) override;
 
 private:
 

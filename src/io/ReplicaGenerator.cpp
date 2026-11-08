@@ -43,14 +43,7 @@ ReplicaGenerator::ReplicaGenerator()
 		_moleculeDataReader(nullptr),
 		_dMoleculeDiameter(0.),
 		_fspY{0., 0., 0., 0., 0., 0.},
-		_nSystemType(ST_UNKNOWN) {
-	// init component ID change data structures
-	uint32_t numComponents = global_simulation->getEnsemble()->getComponents()->size();
-	_vecChangeCompIDsVap.resize(numComponents);
-	_vecChangeCompIDsLiq.resize(numComponents);
-	std::iota(std::begin(_vecChangeCompIDsVap), std::end(_vecChangeCompIDsVap), 0);
-	std::iota(std::begin(_vecChangeCompIDsLiq), std::end(_vecChangeCompIDsLiq), 0);
-}
+		_nSystemType(ST_UNKNOWN) {}
 
 ReplicaGenerator::~ReplicaGenerator() = default;
 
@@ -182,6 +175,13 @@ void ReplicaGenerator::readReplicaPhaseSpaceData(SubDomain& subDomain, DomainDec
 
 void ReplicaGenerator::readXML(XMLfileUnits& xmlconfig) {
 	Log::global_log->debug() << "Reading config for ReplicaGenerator" << std::endl;
+
+	// init component ID change data structures (not in the constructor, which also runs when registering the generator)
+	uint32_t numComponents = global_simulation->getEnsemble()->getComponents()->size();
+	_vecChangeCompIDsVap.resize(numComponents);
+	_vecChangeCompIDsLiq.resize(numComponents);
+	std::iota(std::begin(_vecChangeCompIDsVap), std::end(_vecChangeCompIDsVap), 0);
+	std::iota(std::begin(_vecChangeCompIDsLiq), std::end(_vecChangeCompIDsLiq), 0);
 
 	_nSystemType = ST_UNKNOWN;
 	std::string strType = "unknown";

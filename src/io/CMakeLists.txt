@@ -3,6 +3,7 @@ target_sources(MarDyn
         ASCIIReader.cpp
         BinaryReader.cpp
         CubicGridGeneratorInternal.cpp
+        DefaultReaderFactory.cpp
         IOHelpers.cpp
         MemoryProfiler.cpp
         Mkesfera.cpp

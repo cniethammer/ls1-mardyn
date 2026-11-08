@@ -39,11 +39,14 @@ class MoleculeDataReader;
 
 class ReplicaGenerator : public InputBase {
 public:
+	std::string getPluginName() const override { return "ReplicaGenerator"; }
+	static InputBase* createInstance() { return new ReplicaGenerator(); }
+
 	ReplicaGenerator();
 
 	~ReplicaGenerator();
 
-	unsigned long readPhaseSpace(ParticleContainer* particleContainer, Domain* domain, DomainDecompBase* domainDecomp);
+	unsigned long readPhaseSpace(ParticleContainer* particleContainer, Domain* domain, DomainDecompBase* domainDecomp) override;
 
 	/** @brief Read in XML configuration for MkesferaGenerator and all its included objects.
 	 *
@@ -53,7 +56,7 @@ public:
 	   </generator>
 	   \endcode
 	 */
-	void readXML(XMLfileUnits& xmlconfig);
+	void readXML(XMLfileUnits& xmlconfig) override;
 
 private:
 	void init();

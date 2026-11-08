@@ -361,7 +361,7 @@ private:
 	Domain* _domain;
 
 	/** responsible for reading in the phasespace (header+data) */
-	InputBase* _inputReader;
+	std::unique_ptr<InputBase> _inputReader;
 
 	/** prefix for the names of all output files */
 	std::string _outputPrefix;

@@ -13,6 +13,9 @@ class Component;
  */
 class PerCellGenerator : public InputBase {
 public:
+	std::string getPluginName() const override { return "PerCellGenerator"; }
+	static InputBase* createInstance() { return new PerCellGenerator(); }
+
 	/**
 	 * The following xml object structure is handled by this method:
 	 * \code{.xml}
