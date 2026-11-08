@@ -7,8 +7,6 @@
 
 #pragma once
 
-#ifndef MARDYN_AUTOPAS
-
 #include "plugins/PluginBase.h"
 #include "io/vtk/VTKGridCell.h"
 #include "io/vtk/VTKGridVertex.h"
@@ -90,5 +88,3 @@ private:
 			VTKGridWriterImplementation& impl);
 
 };
-
-#endif /* MARDYN_AUTOPAS */

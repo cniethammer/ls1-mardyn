@@ -58,7 +58,7 @@
 #include "io/TcTS.h"
 #include "io/TimerProfiler.h"
 #ifdef ENABLE_ADIOS2
-#include "io/Adios2Reader.h"
+#include "io/adios2/Adios2Reader.h"
 #endif
 
 #include "ensemble/GrandCanonicalEnsemble.h"

@@ -72,7 +72,7 @@ mardyn_add_plugin(VTKMoleculeWriter
 
 ### Finding plugin directories
 
-`mardyn_add_plugin_subdirectories()` adds all direct subdirectories of the current directory whose CMakeLists.txt calls `mardyn_add_plugin()` or `mardyn_add_plugin_subdirectories()`. It is called in src/plugins/, so a new plugin directory there is found without changing any other CMake file. Other subdirectories are left alone and have to be added with `add_subdirectory()`.
+`mardyn_add_plugin_subdirectories()` adds all direct subdirectories of the current directory whose CMakeLists.txt calls `mardyn_add_plugin()` or `mardyn_add_plugin_subdirectories()`. It is called in src/plugins/ and src/io/, so a new plugin directory there is found without changing any other CMake file. Other subdirectories are left alone and have to be added with `add_subdirectory()`.
 
 ### Registries
 

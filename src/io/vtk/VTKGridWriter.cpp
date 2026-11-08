@@ -5,8 +5,6 @@
  * @Author: eckhardw
  */
 
-#ifndef MARDYN_AUTOPAS
-
 #include "VTKGridWriter.h"
 #include "particleContainer/LinkedCells.h"
 #include "io/vtk/VTKGridWriterImplementation.h"
@@ -190,5 +188,3 @@ void VTKGridWriter::getCellData(LinkedCells* container, VTKGridCell& cell) {
 //! NOP
 void  VTKGridWriter::finish(ParticleContainer * /*particleContainer*/,
 							DomainDecompBase * /*domainDecomp*/, Domain * /*domain*/) { }
-
-#endif /* MARDYN_AUTOPAS */

@@ -4,28 +4,8 @@
 #include "utils/Logger.h"
 
 // Output plugins
-#include "io/CavityWriter.h"
-#include "io/CheckpointWriter.h"
-#include "io/CommunicationPartnerWriter.h"
-#include "io/DecompWriter.h"
-#include "io/EnergyLogWriter.h"
-#include "io/FlopRateWriter.h"
-#include "io/GammaWriter.h"
-#include "io/HaloParticleWriter.h"
-#include "io/KDTreePrinter.h"
-#include "io/LoadBalanceWriter.h"
-#include "io/MPICheckpointWriter.h"
-#include "io/MaxWriter.h"
-#include "io/MmpldWriter.h"
-#include "io/MmspdBinWriter.h"
-#include "io/MmspdWriter.h"
 #include "io/ODF.h"
-#include "io/PovWriter.h"
 #include "io/RDF.h"
-#include "io/ResultWriter.h"
-#include "io/SysMonOutput.h"
-#include "io/TimerWriter.h"
-#include "io/XyzWriter.h"
 
 // General plugins
 #include "plugins/COMaligner.h"
@@ -43,15 +23,6 @@
 #include "plugins/SpatialProfile.h"
 #include "plugins/VectorizationTuner.h"
 #include "plugins/WallPotential.h"
-#ifdef ENABLE_ADIOS2
-#include "io/Adios2Writer.h"
-#endif
-
-#ifdef VTK
-#include "io/vtk/VTKGridWriter.h"
-#include "io/vtk/VTKMoleculeWriter.h"
-#endif
-
 #ifdef MAMICO_COUPLING
 #include "plugins/MamicoCoupling.h"
 #endif
@@ -64,52 +35,23 @@ DefaultPluginFactory::DefaultPluginFactory() {
 
 	// plugins not yet moved to their own directories
 
-#ifdef ENABLE_ADIOS2
-	REGISTER_PLUGIN(Adios2Writer);
-#endif
 	REGISTER_PLUGIN(COMaligner);
-	REGISTER_PLUGIN(CavityWriter);
-	REGISTER_PLUGIN(CheckpointWriter);
-	REGISTER_PLUGIN(CommunicationPartnerWriter);
-	REGISTER_PLUGIN(DecompWriter);
 	REGISTER_PLUGIN(DirectedPM);
 	REGISTER_PLUGIN(Dropaccelerator);
 	REGISTER_PLUGIN(Dropaligner);
-	REGISTER_PLUGIN(EnergyLogWriter);
 	REGISTER_PLUGIN(FixRegion);
-	REGISTER_PLUGIN(FlopRateWriter);
-	REGISTER_PLUGIN(GammaWriter);
-	REGISTER_PLUGIN(HaloParticleWriter);
 	REGISTER_PLUGIN(InMemoryCheckpointing);
 	REGISTER_PLUGIN(SpatialProfile);
-	REGISTER_PLUGIN(KDTreePrinter);
-	REGISTER_PLUGIN(LoadbalanceWriter);
 	REGISTER_PLUGIN(LoadImbalanceThroughSleepPlugin);
-	REGISTER_PLUGIN(MPICheckpointWriter);
 	REGISTER_PLUGIN(MaxCheck);
-	REGISTER_PLUGIN(MaxWriter);
 	REGISTER_PLUGIN(Mirror);
 	REGISTER_PLUGIN(MirrorSystem);
-	REGISTER_PLUGIN(MmpldWriter);
-	REGISTER_PLUGIN(MmspdBinWriter);
-	REGISTER_PLUGIN(MmspdWriter);
 	REGISTER_PLUGIN(ODF);
 	REGISTER_PLUGIN(Permittivity);
-	REGISTER_PLUGIN(PovWriter);
 	REGISTER_PLUGIN(RDF);
 	REGISTER_PLUGIN(DistControl);
-	REGISTER_PLUGIN(ResultWriter);
-	REGISTER_PLUGIN(SysMonOutput);
-	REGISTER_PLUGIN(TimerWriter);
 	REGISTER_PLUGIN(VectorizationTuner);
 	REGISTER_PLUGIN(WallPotential);
-	REGISTER_PLUGIN(XyzWriter);
-#ifdef VTK
-	REGISTER_PLUGIN(VTKMoleculeWriter);
-#ifndef MARDYN_AUTOPAS
-	REGISTER_PLUGIN(VTKGridWriter);
-#endif
-#endif
 
 #ifdef MAMICO_COUPLING
 	REGISTER_PLUGIN(MamicoCoupling);

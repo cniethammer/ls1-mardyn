@@ -5,8 +5,6 @@
  * @Author: eckhardw
  */
 
-#ifndef MARDYN_AUTOPAS
-
 #include "io/vtk/tests/VTKGridWriterTest.h"
 #include "io/vtk/VTKGridWriter.h"
 #include "Domain.h"
@@ -76,6 +74,3 @@ void VTKGridWriterTest::testEmptyGrid() {
 	removeFile("VTKGridWriterTest_2.vtu");
 #endif
 }
-
-
-#endif
