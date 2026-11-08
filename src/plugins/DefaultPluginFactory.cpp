@@ -11,9 +11,6 @@
 #include "plugins/Mirror.h"
 #include "plugins/NEMD/DistControl.h"
 #include "plugins/VectorizationTuner.h"
-#ifdef MAMICO_COUPLING
-#include "plugins/MamicoCoupling.h"
-#endif
 
 DefaultPluginFactory::DefaultPluginFactory() {
 	Log::global_log->debug() << "REGISTERING PLUGINS" << std::endl;
@@ -28,8 +25,4 @@ DefaultPluginFactory::DefaultPluginFactory() {
 	REGISTER_PLUGIN(RDF);
 	REGISTER_PLUGIN(DistControl);
 	REGISTER_PLUGIN(VectorizationTuner);
-
-#ifdef MAMICO_COUPLING
-	REGISTER_PLUGIN(MamicoCoupling);
-#endif
 }

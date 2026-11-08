@@ -1,6 +1,4 @@
-#ifdef MAMICO_COUPLING
-
-#include "MamicoCoupling.h"
+#include "plugins/MamicoCoupling/MamicoCoupling.h"
 #include "Domain.h"
 
 void MamicoCoupling::init(ParticleContainer *particleContainer, DomainDecompBase *domainDecomp, Domain *domain) {
@@ -29,4 +27,3 @@ void MamicoCoupling::afterForces(ParticleContainer *particleContainer, DomainDec
 	}
 }
 
-#endif  // MAMICO_COUPLING

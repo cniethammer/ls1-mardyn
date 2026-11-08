@@ -1,7 +1,6 @@
 target_sources(MarDyn
     PRIVATE
         DefaultPluginFactory.cpp
-        MamicoCoupling.cpp
         Mirror.cpp
         PluginCallbacks.cpp
         PluginLoader.cpp
