@@ -33,6 +33,11 @@ set(MARDYN_PLUGIN_DEFAULT_REGISTRY "plugins")
 #              or "NOT MARDYN_AUTOPAS"; otherwise the option is hidden and forced OFF
 #   LIBRARIES  additional libraries the plugin links against
 #   DEFAULT    default value of the option (default: ON)
+#
+# After the call, the variable MARDYN_PLUGIN_<name> holds whether the plugin is actually built,
+# in the calling directory and all its subdirectories added afterwards. Use it there, e.g. for
+# REQUIRES of dependent plugins or to add tests. Outside this scope, the cached value of a plugin
+# whose REQUIRES are not met may still be ON, as CMake keeps the user's choice for later.
 function(mardyn_add_plugin NAME)
     cmake_parse_arguments(PARSE_ARGV 1 ARG "" "HEADER;REGISTRY;DEFAULT" "SOURCES;CLASSES;REQUIRES;LIBRARIES")
     if(ARG_UNPARSED_ARGUMENTS)
@@ -58,10 +63,14 @@ function(mardyn_add_plugin NAME)
         option(${option_name} "Build plugin ${NAME}" ${ARG_DEFAULT})
     endif()
 
+    # cmake_dependent_option() only sets the forced OFF value in this function's scope and keeps
+    # the cached value, so pass the effective value on to the caller (see above).
     if(NOT ${option_name})
+        set(${option_name} OFF PARENT_SCOPE)
         message(STATUS "Plugin ${NAME} (${ARG_REGISTRY}): disabled")
         return()
     endif()
+    set(${option_name} ON PARENT_SCOPE)
     message(STATUS "Plugin ${NAME} (${ARG_REGISTRY}): enabled")
 
     get_property(generated GLOBAL PROPERTY MARDYN_PLUGIN_REGISTRY_${ARG_REGISTRY}_GENERATED)
