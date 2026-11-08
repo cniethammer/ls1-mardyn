@@ -1,23 +1,12 @@
 target_sources(MarDyn
     PRIVATE
-        COMaligner.cpp
         DefaultPluginFactory.cpp
-        DirectedPM.cpp
-        Dropaccelerator.cpp
-        Dropaligner.cpp
-        FixRegion.cpp
-        InMemoryCheckpointing.cpp
-        LoadImbalanceThroughSleepPlugin.cpp
         MamicoCoupling.cpp
-        MaxCheck.cpp
         Mirror.cpp
-        MirrorSystem.cpp
-        Permittivity.cpp
         PluginCallbacks.cpp
         PluginLoader.cpp
         SpatialProfile.cpp
         VectorizationTuner.cpp
-        WallPotential.cpp
     )
 
 if(ENABLE_UNIT_TESTS)

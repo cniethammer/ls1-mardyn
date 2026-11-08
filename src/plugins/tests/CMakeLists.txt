@@ -1,8 +1,3 @@
-target_sources(MarDyn
-    PRIVATE
-        COMalignerTest.cpp
-    )
-
 
 # Catch2 based unit tests
 find_package(Catch2 3 QUIET)
