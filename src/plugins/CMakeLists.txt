@@ -25,7 +25,6 @@ if(ENABLE_UNIT_TESTS)
 endif(ENABLE_UNIT_TESTS)
 
 
-add_subdirectory(NEMD)
 add_subdirectory(profiles)
 
 # self-contained plugins in subdirectories, see cmake/plugins.cmake

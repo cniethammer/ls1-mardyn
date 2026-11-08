@@ -109,6 +109,9 @@ endfunction()
 #     option MARDYN_PLUGIN_<name> (e.g. TcpConnector instead of tcp).
 #   - Sub-plugins that are only useful together with their parent plugin should declare
 #     REQUIRES MARDYN_PLUGIN_<parent>, so they are disabled together with the parent.
+#   - Directories grouping plugins can define a group option MARDYN_PLUGIN_<group> with option()
+#     and let all plugins of the group declare REQUIRES MARDYN_PLUGIN_<group> (see NEMD/).
+#     The plugin options are then only shown if the group is enabled.
 function(mardyn_add_plugin_subdirectories)
     file(GLOB children LIST_DIRECTORIES true CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/*")
     foreach(dir IN LISTS children)
