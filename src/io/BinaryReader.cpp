@@ -73,7 +73,7 @@ void BinaryReader::setPhaseSpaceHeaderFile(std::string filename) {
 	_phaseSpaceHeaderFile = filename;
 }
 
-void BinaryReader::readPhaseSpaceHeader(Domain* domain, double timestep) {
+void BinaryReader::readPhaseSpaceHeader(Domain* domain) {
 	XMLfileUnits inp(_phaseSpaceHeaderFile);
 
 	if(not inp.changecurrentnode("/mardyn")) {

@@ -644,9 +644,6 @@ void Simulation::readXML(XMLfileUnits& xmlconfig) {
 		else if (pspfiletype == "binary") {
 			_inputReader = new BinaryReader();
 			_inputReader->readXML(xmlconfig);
-			//!@todo read header should be either part of readPhaseSpace or readXML.
-			double timestepLength = 0.005;  // <-- TODO: should be removed from parameter list
-			_inputReader->readPhaseSpaceHeader(_domain, timestepLength);
 		}
 #ifdef ENABLE_ADIOS2
         else if (pspfiletype == "adios2") {
@@ -689,6 +686,10 @@ void Simulation::readXML(XMLfileUnits& xmlconfig) {
 			MARDYN_EXIT(error_message.str());
 		}
 		_inputReader->readXML(xmlconfig);
+	}
+
+	if(_inputReader) {
+		_inputReader->readPhaseSpaceHeader(_domain);
 	}
 
 	if(auto phasespacepointNode = xmlconfig.scopedChangeCurrentNode("ensemble/phasespacepoint")) {

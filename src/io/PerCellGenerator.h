@@ -30,10 +30,6 @@ public:
 	 */
 	void readXML(XMLfileUnits &xmlconfig) override;
 
-	void readPhaseSpaceHeader(Domain *domain, double timestep) override{
-		// Empty as no header file exists.
-	};
-
 	unsigned long readPhaseSpace(ParticleContainer *particleContainer, Domain *domain,
 								 DomainDecompBase *domainDecomp) override;
 

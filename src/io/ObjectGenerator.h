@@ -45,8 +45,6 @@ public:
 
 	void setMoleculeIDPool(std::shared_ptr<MoleculeIdPool> moleculeIdPool) { _moleculeIdPool = moleculeIdPool; }
 
-	void readPhaseSpaceHeader(Domain* /*domain*/, double /*timestep*/) {}
-
 	unsigned long readPhaseSpace(ParticleContainer* particleContainer, Domain* domain, DomainDecompBase* domainDecomp);
 
 private:

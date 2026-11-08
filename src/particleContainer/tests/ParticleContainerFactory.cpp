@@ -66,7 +66,7 @@ ParticleContainer* ParticleContainerFactory::createInitializedParticleContainer(
 		asciiReader->setPhaseSpaceHeaderFile(fileName);
 		asciiReader->setPhaseSpaceFile(fileName);
 	}
-	inputReader->readPhaseSpaceHeader(domain, 1.0);
+	inputReader->readPhaseSpaceHeader(domain);
 	double bBoxMin[3];
 	double bBoxMax[3];
 	for (int i = 0; i < 3; i++) {

@@ -50,7 +50,12 @@ void ASCIIReader::readXML(XMLfileUnits& xmlconfig) {
 	setPhaseSpaceFile(pspfile);
 }
 
-void ASCIIReader::readPhaseSpaceHeader(Domain* domain, double timestep) {
+void ASCIIReader::readPhaseSpaceHeader(Domain* domain) {
+	// configurations specify components and box in the XML file and set no header file
+	if (_phaseSpaceHeaderFile.empty()) {
+		return;
+	}
+
 	std::string token;
 
 	Log::global_log->info() << "Opening phase space header file " << _phaseSpaceHeaderFile << std::endl;

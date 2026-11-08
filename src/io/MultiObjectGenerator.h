@@ -30,8 +30,6 @@ public:
 	 */
 	virtual void readXML(XMLfileUnits& xmlconfig);
 
-	void readPhaseSpaceHeader(Domain* /*domain*/, double /*timestep*/) {}
-
 	unsigned long readPhaseSpace(ParticleContainer* particleContainer, Domain* domain, DomainDecompBase* domainDecomp);
 
 private:

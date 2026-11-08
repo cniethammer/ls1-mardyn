@@ -33,9 +33,6 @@ void MkTcTSGenerator::readXML(XMLfileUnits& xmlconfig) {
 	Log::global_log->info() << "Layer 2, density: " << rho2 << std::endl;
 }
 
-void MkTcTSGenerator::readPhaseSpaceHeader(Domain* domain, double /*timestep*/) {
-}
-
 unsigned long
 MkTcTSGenerator::readPhaseSpace(ParticleContainer* particleContainer, Domain* domain, DomainDecompBase*) {
 

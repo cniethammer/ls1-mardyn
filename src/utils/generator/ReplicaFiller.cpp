@@ -201,7 +201,7 @@ void ReplicaFiller::init() {
 	// basisContainer.setBoundingBox(object);
 
 	Domain domain(0);
-	_inputReader->readPhaseSpaceHeader(&domain, 0.0);
+	_inputReader->readPhaseSpaceHeader(&domain);
 	_inputReader->readPhaseSpace(&basisContainer, &domain, &global_simulation->domainDecomposition());
 	unsigned long numberOfParticles = basisContainer.getNumberOfParticles();
 	Log::global_log->info() << "[ReplicaFiller] Number of molecules in the replica: " << numberOfParticles << std::endl;

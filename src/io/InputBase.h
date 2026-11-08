@@ -21,11 +21,14 @@ public:
 
 	virtual ~InputBase() = default;
 
-	/** @brief read the phase space components and header information
-	 * @param domain  pointer to domain object
-	 * @param timestep timestep length
+	/** @brief Read the header information, e.g. the box size and the simulation time.
+	 *
+	 * Called after readXML() while reading the configuration, i.e. before the particle container
+	 * is set up, so readers can set information on the domain that is needed for that.
+	 * The default implementation does nothing.
+	 * @param domain  domain to set the header information on
 	 */
-	virtual void readPhaseSpaceHeader(Domain* domain, double timestep) = 0;
+	virtual void readPhaseSpaceHeader(Domain* /*domain*/) {}
 
 	virtual void readXML(XMLfileUnits& /*xmlconfig*/) {}
 

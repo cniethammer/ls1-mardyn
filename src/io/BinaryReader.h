@@ -70,7 +70,7 @@ public:
 	//! \li NumberOfMolecules: One token follows with the number of molecules
 	//!
 	//! An example can be seen in the documentation of this class
-	void readPhaseSpaceHeader(Domain* domain, double timestep);
+	void readPhaseSpaceHeader(Domain* domain);
 
 	//! @brief reads in the data of all molecules
 	//!

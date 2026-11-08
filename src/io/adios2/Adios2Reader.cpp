@@ -53,11 +53,6 @@ void Adios2Reader::testInit(std::string infile, int step, std::string adios2engi
 	if (!mainInstance) initAdios2();
 }
 
-void Adios2Reader::readPhaseSpaceHeader(Domain* domain, double timestep) {
-//EMPTY
-};
-
-
 unsigned long Adios2Reader::readPhaseSpace(ParticleContainer* particleContainer, Domain* domain,
 										   DomainDecompBase* domainDecomp) {
 	auto variables = io->AvailableVariables();

@@ -451,7 +451,7 @@ void KDDecompositionTest::testbalanceAndExchange() {
 	std::string fileName2 = getTestDataFilename("DomainDecompBase.inp");
 	inputReader.setPhaseSpaceHeaderFile(fileName2.c_str());
 	inputReader.setPhaseSpaceFile(fileName2.c_str());
-	inputReader.readPhaseSpaceHeader(_domain, 1.0);
+	inputReader.readPhaseSpaceHeader(_domain);
 
 	kdd = new KDDecomposition(cutOff, 1, 1, fullSearchThreshold);
 	kdd->init(_domain);

@@ -16,8 +16,6 @@ public:
 
 	~MkTcTSGenerator() {}
 
-	void readPhaseSpaceHeader(Domain* domain, double timestep);
-
 	unsigned long readPhaseSpace(ParticleContainer* particleContainer, Domain* domain, DomainDecompBase* domainDecomp);
 
 
